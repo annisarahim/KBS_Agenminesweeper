@@ -179,6 +179,7 @@
     (retract ?del_can)
     (retract ?del_score)
     (assert (probe ?x ?y ?n))
+    (assert (not_cek_probe ?x ?y))
     (printout t "hapuss score"?x ?y crlf)
 
 )
