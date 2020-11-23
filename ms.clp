@@ -178,10 +178,70 @@
     =>
     (retract ?del_can)
     (retract ?del_score)
-    (assert (probe ?x ?y ?n))
+    (assert (probed ?x ?y ?n))
     (assert (not_cek_probe ?x ?y))
     (printout t "hapuss score"?x ?y crlf)
 
 )
 
 
+;proberemaining
+(defrule probe-kiri-atas
+	?f1 <- (probe_remaining ?x ?y)
+  =>
+  (bind ?left (- ?x 1))
+  (bind ?up (- ?y 1)) 
+  (assert(can_probe ?left ?up))
+)
+
+(defrule probe-kiri-tengah
+	?f1 <- (probe_remaining ?x ?y)
+  =>
+  (bind ?left (- ?x 1))
+  (assert(can_probe ?left ?y))
+)
+
+(defrule probe-kiri-bawah
+	?f1 <- (probe_remaining ?x ?y)
+  =>
+  (bind ?left (- ?x 1))
+  (bind ?down (+ ?y 1)) 
+  (assert(can_probe ?left ?down))
+)
+
+(defrule probe-kanan-atas
+	?f1 <- (probe_remaining ?x ?y)
+  =>
+  (bind ?right (+ ?x 1))
+  (bind ?up (- ?y 1)) 
+  (assert(can_probe ?right ?up))
+)
+
+(defrule probe-kanan-tengah
+	?f1 <- (probe_remaining ?x ?y)
+  =>
+  (bind ?right (+ ?x 1))
+  (assert(can_probe ?right ?y))
+)
+
+(defrule probe-kanan-bawah
+	?f1 <- (probe_remaining ?x ?y)
+  =>
+  (bind ?right (+ ?x 1))
+  (bind ?down (+ ?y 1)) 
+  (assert(can_probe ?right ?down))
+)
+
+(defrule probe-tengah-atas
+	?f1 <- (probe_remaining ?x ?y)
+  =>
+  (bind ?up (- ?y 1)) 
+  (assert(can_probe ?x ?up))
+)
+
+(defrule probe-tengah-bawah
+	?f1 <- (probe_remaining ?x ?y)
+  =>
+  (bind ?down (+ ?y 1)) 
+  (assert(can_probe ?x ?down))
+)
