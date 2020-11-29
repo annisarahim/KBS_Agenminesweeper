@@ -6,20 +6,24 @@
     (declare (salience 500))
     ?sisa <- (flag_remaining ?x ?y)
     ?sekitar <- (around_flag ?x ?y ?n)
-    ?tutup <- (closed ?cekx ?ceky)
+    ?tutup <- (closed ?cekx ?ceky ?z)
     ?total <- (total_flag ?t)
+    ?sekitar_tutup <- (around_closed ?x ?y ?a)
     (not (flag ?cekx ?ceky))
     =>
 
+    ;ini kondisi -> lg ngecek bagian mana dari tile sekarang 
     ;atas
     (if (or (and (eq ?cekx (+ ?x 1)) (eq ?ceky (- ?y 1))) ;atas-kanan
     (or (and (eq ?cekx (- ?x 1)) (eq ?ceky (- ?y 1))) ;atas-kiri
     (and (eq ?cekx ?x) (eq ?ceky (- ?y 1))))) ;atas-tengah
         then
             (retract ?sekitar)
+            (retract ?sekitar_tutup)
             (assert (flag ?cekx ?ceky))
             (assert (around_flag ?x ?y (+ ?n 1)))
             (assert (total_flag (+ ?t 1)))
+            (assert (around_closed ?x ?y (- ?a 1)))
 
             (printout t "Bagian Atas" ?x ?y crlf)
     )
@@ -29,9 +33,11 @@
     (and (eq ?cekx (+ ?x 1)) (eq ?ceky ?y))) ;sejajar-kanan
         then
             (retract ?sekitar)
+            (retract ?sekitar_tutup)
             (assert (flag ?cekx ?ceky))
             (assert (around_flag ?x ?y (+ ?n 1)))
             (assert (total_flag (+ ?t 1)))
+            (assert (around_closed ?x ?y (- ?a 1)))
 
             (printout t "Sejajar" ?x ?y crlf)
     )
@@ -42,9 +48,11 @@
     (and (eq ?cekx ?x) (eq ?ceky (+ ?y 1))))) ;bawah-tengah
         then
             (retract ?sekitar)
+            (retract ?sekitar_tutup)
             (assert (flag ?cekx ?ceky))
             (assert (around_flag ?x ?y (+ ?n 1)))
             (assert (total_flag (+ ?t 1)))
+            (assert (around_closed ?x ?y (- ?a 1)))
 
             (printout t "Bawah" ?x ?y crlf)
     )
