@@ -4,6 +4,12 @@ def score(bombs, board_size):
     fact_array = []
     fact_string = "(board " + str(board_size) + " " + str(board_size) + ")"
     fact_array.append(fact_string)
+    total_bomb = len(bombs)
+    fact_string = "(total_bomb " + str(total_bomb) + ")"
+    fact_array.append(fact_string)
+    fact_string = "(total_flag " + str(0) + ")"
+    fact_array.append(fact_string)
+
 
     for bomb in bombs:
        (x_bomb, y_bomb) = bomb
