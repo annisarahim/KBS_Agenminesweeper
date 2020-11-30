@@ -542,15 +542,6 @@
     (assert(can_probe ?x ?down))
 )
 
-(defrule total_flag_count
-    ?f1 <- (total_flag ?t)
-    (flag ?x ?y ?n)
-    =>
-    (bind ?a (+ ?t 1))
-    (retract f1)
-    (assert (total_flag ?a))
-)
-
 (defrule flag_remain
     ?sisa <- (flag_remaining ?x ?y)
     ?sekitar <- (around_flag ?x ?y ?n)
@@ -572,7 +563,6 @@
             (assert (around_flag ?x ?y (+ ?n 1)))
             (assert (total_flag (+ ?t 1)))
             (assert (around_closed ?x ?y (- ?a 1)))
-            (assert (please_update ?x ?y ?z))
 
             (printout t "Bagian Atas" ?x ?y crlf)
     )
@@ -583,11 +573,10 @@
         then
             (retract ?sekitar)
             (retract ?sekitar_tutup)
-            (assert (flag ?cekx ?ceky))
+            (assert (flag ?cekx ?ceky ?z))
             (assert (around_flag ?x ?y (+ ?n 1)))
             (assert (total_flag (+ ?t 1)))
             (assert (around_closed ?x ?y (- ?a 1)))
-            (assert (please_update ?x ?y ?z))
 
             (printout t "Sejajar" ?x ?y crlf)
     )
@@ -599,14 +588,12 @@
         then
             (retract ?sekitar)
             (retract ?sekitar_tutup)
-            (assert (flag ?cekx ?ceky))
+            (assert (flag ?cekx ?ceky ?z))
             (assert (around_flag ?x ?y (+ ?n 1)))
             (assert (total_flag (+ ?t 1)))
             (assert (around_closed ?x ?y (- ?a 1)))
-            (assert (please_update ?x ?y ?z))
 
             (printout t "Bawah" ?x ?y crlf)
     )
-    
 
 )

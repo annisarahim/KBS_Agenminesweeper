@@ -9,7 +9,7 @@
     ?tutup <- (closed ?cekx ?ceky ?z)
     ?total <- (total_flag ?t)
     ?sekitar_tutup <- (around_closed ?x ?y ?a)
-    (not (flag ?cekx ?ceky))
+    (not (flag ?cekx ?ceky ?z))
     =>
 
     ;ini kondisi -> lg ngecek bagian mana dari tile sekarang 
@@ -20,7 +20,7 @@
         then
             (retract ?sekitar)
             (retract ?sekitar_tutup)
-            (assert (flag ?cekx ?ceky))
+            (assert (flag ?cekx ?ceky ?z))
             (assert (around_flag ?x ?y (+ ?n 1)))
             (assert (total_flag (+ ?t 1)))
             (assert (around_closed ?x ?y (- ?a 1)))
@@ -34,7 +34,7 @@
         then
             (retract ?sekitar)
             (retract ?sekitar_tutup)
-            (assert (flag ?cekx ?ceky))
+            (assert (flag ?cekx ?ceky ?z))
             (assert (around_flag ?x ?y (+ ?n 1)))
             (assert (total_flag (+ ?t 1)))
             (assert (around_closed ?x ?y (- ?a 1)))
@@ -49,7 +49,7 @@
         then
             (retract ?sekitar)
             (retract ?sekitar_tutup)
-            (assert (flag ?cekx ?ceky))
+            (assert (flag ?cekx ?ceky ?z))
             (assert (around_flag ?x ?y (+ ?n 1)))
             (assert (total_flag (+ ?t 1)))
             (assert (around_closed ?x ?y (- ?a 1)))
