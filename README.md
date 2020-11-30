@@ -17,16 +17,16 @@ User input dapat dimasukkan melalui file init.txt yang berisi ukuran papan, juml
 ```
 10
 8
-0 6
-2 2
-2 4
-3 3
-4 2
-5 6
-6 2
-7 8
+0, 6
+2, 2
+2, 4
+3, 3
+4, 2
+5, 6
+6, 2
+7, 8
 ```
-Baris pertama adalah ukuran board, baris kedua adalah jumlah bomb, baris ketiga hingga akhir adalah posisi masing-masing bomb (x, y) dengan penulisan x spasi y. Pada contoh diatas, ukuran board adalah 10, jumlah bomb adalah 8, posisi bomb ada di (0, 6), (2, 2), (2, 4), (3, 3), (4, 2), (5, 6), (6, 2), dan (7, 8). Pastikan tidak ada spasi setelah angka terakhir dalam baris. 
+Baris pertama adalah ukuran board, baris kedua adalah jumlah bomb, baris ketiga hingga akhir adalah posisi masing-masing bomb (x, y) dengan penulisan 'x, y'. Pada contoh diatas, ukuran board adalah 10, jumlah bomb adalah 8, posisi bomb ada di (0, 6), (2, 2), (2, 4), (3, 3), (4, 2), (5, 6), (6, 2), dan (7, 8). Pastikan tidak ada spasi setelah angka terakhir dalam baris. 
 
 3. Jalankan program dengan `python3 minesweeper.py `
 4. Program akan menggambarkan langkah-langkah yang dilakukan oleh agen dalam bentuk matriks serta di akhir akan memberikan prediksi posisi bomb dan kondisi akhir
