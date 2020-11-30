@@ -53,21 +53,10 @@ def score(bombs, board_size):
 def printmatrix(matrix,b_size):
     for i in range (b_size):
         for j in range (b_size):
-<<<<<<< Updated upstream
-            if (int(matrix[i][j])==-1):
-                print(matrix[i][j], end=" ")
-            elif (int(matrix[i][j])<10):
-                print(matrix[i][j], end="  ")
-            else:
-                print(matrix[i][j], end=" ")
-            if (j==b_size-1):
-                print("")
-=======
             if (j==b_size-1):
                 print("")
             else:
               print(matrix[i][j], end=" ")
->>>>>>> Stashed changes
 
 # Read info from txt
 file = open("init.txt", "r")
