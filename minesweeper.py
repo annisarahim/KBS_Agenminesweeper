@@ -2,6 +2,7 @@ import clips
 import termcolor
 from termcolor import cprint
 
+# Mengembalikan array dari fakta dan output matrix
 def score(bombs, board_size):
     matrix = [['X' for i in range (board_size)] for j in range(board_size)]
 
@@ -52,8 +53,7 @@ def score(bombs, board_size):
 
     return fact_array, matrix
 
-# # # # # # # 
-
+# Mengembalikan matriks
 def printmatrix(matrix,b_size):
     for i in range (b_size):
         for j in range (b_size):
@@ -79,8 +79,6 @@ def printmatrix(matrix,b_size):
           if (j == (b_size-1)):
               print("")
                 
-             
-
 # Read info from txt
 file = open("init.txt", "r")
 lines = file.readlines()
@@ -89,14 +87,18 @@ for i in range (len(lines)):
     j = 0
     char = ''
     while (j < len(lines[i])):
-        if (lines[i][j] != " ") and (lines[i][j] != '\n'):
+        if ((lines[i][j] != ',') and (lines[i][j] != '\n')) :
             char += lines[i][j]
             if (j == (len(lines[i]) -1)):
                 init.append(int(char))
         else:
             init.append(int(char))
             char =''
-        j +=1
+        
+        if ((lines[i][j] == ',') and ((lines[i][j+1] == " ") and (j+1) < len(lines[i]))) :
+            j+= 2
+        else :
+            j+=1
 file.close()
 
 # Extract info
@@ -114,14 +116,11 @@ print("Bomb(s)        = " + str(bombs))
 
 # Create new CLIPS environment
 env = clips.Environment()
-
-
 env.load('ms.clp')
+
 # Insert initial facts to CLIPS
 initial_board_fact, matrix  = score(bombs, board_size)
-#for fact in initial_board_fact:
-#    print(fact)
-#print ("factss printed")
+
 i = int
 for i in range (len(initial_board_fact)):
     fact_string = initial_board_fact[i]
@@ -132,22 +131,22 @@ print("Let's Play!")
 
 i = input("Press enter to start!")
 
+#Draw board 
 for i in range (init[0]):
   for j in range (init[0]):
     matrix[i][j] = "X"
 printmatrix(matrix,init[0])
 
-  
-# for rule in env.rules():
-#     print(rule)
+
 win = False
 flags=[]
 while not(win):
-  # print("Loading...")
   env.run(1)
   draw = False
   for fact in env.facts():
     draw = False
+
+    # Menandai pada matriks apabila ada flag pada tile 
     if fact.template.name == 'flag':
       x = str(fact[0])
       y = str(fact[1])
@@ -158,18 +157,22 @@ while not(win):
         print("")
         print(fact.template.name,x,y)
         draw = True
-
+    
+    # Menandai pada matriks apabila ada tile yang dibuka
     elif fact.template.name == 'probed':
       x = str(fact[0])
       y = str(fact[1])
       score = str(fact[2])
+      
       if (matrix[int(y)][int(x)] != score):
         matrix[int(y)][int(x)] = score
+        #jika score pada elemen lebih dari 0
         if (fact[2]>0):
           print("")
           print(fact.template.name,x,y)
           draw = True
-
+    
+    # Menandai apabila sudah pada kondisi berhenti 
     elif (fact.template.name == 'win'):
       lose = False
       for flag_ in flags :
@@ -187,10 +190,9 @@ while not(win):
 
     if (draw):
       printmatrix(matrix, init[0]) 
-      # i = input("next")
-  
+      # uncomment this for steps
+      # step = input()
 
-
-print("Bombs: ",bombs)
-print("Flags: ",flags)
-    
+print()
+print("Initial Bomb(s): ",bombs)
+print("Flags Result: ",flags)
