@@ -61,7 +61,8 @@
     (retract ?init)
     (retract ?tile0)
     (assert (probed 0 0 0))
-    (printout t "LOHAAA SELAMAT DATANG" crlf)
+    (printout t "WELCOME TO MINESWEEPER!!" crlf)
+    (printout t "Let's Play!" crlf)
     (printout t "" crlf)
 )
 
@@ -89,7 +90,7 @@
     (assert (probed 1 1 ?s3))
     (assert (not_cek_probe 1 1))
 
-    (printout t "rule probe-start jalan" crlf)
+    ;(printout t "rule probe-start jalan" crlf)
 )
 
 (defrule probe-zero
@@ -119,7 +120,7 @@
             (assert (can_probe ?xleft ?ydown))
             (assert (can_probe ?x ?ydown))
 
-            (printout t "kanan atas"?x ?y crlf)
+            ;(printout t "kanan atas"?x ?y crlf)
         )
     ; sudut kanan bawah
     (if (and (eq ?x (- ?xb 1)) (eq ?y (- ?yb 1)))
@@ -128,7 +129,7 @@
             (assert (can_probe ?xleft ?yup))
             (assert (can_probe ?x ?yup))
 
-            (printout t "kanan bawah"?x ?y crlf)
+            ;(printout t "kanan bawah"?x ?y crlf)
         )
     ; sudut kiri bawah
     (if (and (eq ?x 0) (eq ?y (- ?yb 1)))
@@ -137,7 +138,7 @@
             (assert (can_probe ?xright ?yup))
             (assert (can_probe ?x ?yup))
 
-            (printout t "kiri bawah"?x ?y crlf)
+            ;(printout t "kiri bawah"?x ?y crlf)
         )
     ; sudut kiri atas
     (if (and (eq ?x 0) (eq ?y 0))
@@ -146,7 +147,7 @@
             (assert (can_probe ?xright ?ydown))
             (assert (can_probe ?x ?ydown))
 
-            (printout t "kiri atas"?x ?y crlf)
+            ;(printout t "kiri atas"?x ?y crlf)
         )
     ; bawah
     (if (and (neq ?x (- ?xb 1)) (and (neq ?x 0) (eq ?y (- ?yb 1))))
@@ -157,7 +158,7 @@
             (assert (can_probe ?xleft ?y))
             (assert (can_probe ?xleft ?yup))
 
-            (printout t "bawah" ?x ?y crlf)
+            ;(printout t "bawah" ?x ?y crlf)
         )
 
     ; sisi kiri
@@ -169,7 +170,7 @@
         (assert (can_probe ?xright ?yup))
         (assert (can_probe ?x ?yup))
 
-        (printout t "kiri"?x ?y crlf)
+        ;(printout t "kiri"?x ?y crlf)
     )
 
     ; atas
@@ -182,7 +183,7 @@
             (assert (can_probe ?xleft ?ydown))
 
 
-            (printout t "atas"?x ?y crlf)
+            ;(printout t "atas"?x ?y crlf)
         )
     
     ; sisi kanan
@@ -195,7 +196,7 @@
             (assert (can_probe ?xleft ?ydown))
             (assert (can_probe ?x ?ydown))
 
-            (printout t "sisi kanan" ?x ?y crlf)
+            ;(printout t "sisi kanan" ?x ?y crlf)
     )
 
     ; tengah
@@ -212,7 +213,7 @@
             (assert (can_probe ?xleft ?yup))
 
 
-            (printout t "tengah"?x ?y crlf)
+            ;(printout t "tengah"?x ?y crlf)
     )
     (retract ?cek)
 ;   (assert (has_cek_probe ?x ?y))
@@ -229,7 +230,7 @@
     (retract ?del_score)
     (assert (probed ?x ?y ?n))
     (assert (not_cek_probe ?x ?y))
-    (printout t "hapuss score"?x ?y crlf)
+    ;(printout t "Probe posisi" ?x " " ?y crlf)
 )
 
 (defrule aksi-1
@@ -302,11 +303,11 @@
     (declare (salience 10))
     ?a <- (please_update ?x ?y)
     (board ?xb ?yb)
-	?f1 <- (around_closed ?x ?y ?m)
+	  ?f1 <- (around_closed ?x ?y ?m)
     ?f2 <- (around_flag ?x ?y ?o)
 	;(test (neq ?n 0))
- ;   (test (eq ?m 0))
-  ;  (test (eq ?o 0))
+  ;(test (eq ?m 0))
+  ;(test (eq ?o 0))
 	=>
 	(bind ?xleft (- ?x 1))
     (bind ?xright (+ ?x 1))
@@ -447,7 +448,7 @@
     (retract ?f2)
     (assert (around_closed ?x ?y ?n_close))
     
-    (printout t ?x " " ?y " " ?a " " ?b  crlf)
+    ;(printout t ?x " " ?y " " ?a " " ?b  crlf)
 )
 
 (defrule cek-close-probed
@@ -472,12 +473,12 @@
 ;    (test (> ?m 0))
     =>
     (bind ?n_flag (+ ?n 1))
- ;   (bind ?n_close (- ?m 1))
+;   (bind ?n_close (- ?m 1))
     (retract ?f1)
     (retract ?f2)
     (assert (around_flag ?x ?y ?n_flag))
 ;    (assert (around_closed ?x ?y ?n_close))
-    (printout t ?x " " ?y " " ?a " " ?b  crlf)
+;    (printout t ?x " " ?y " " ?a " " ?b  crlf)
 )
 
 (defrule cek-flag-probed
@@ -506,7 +507,7 @@
     then
         (assert (probed ?x1 ?y1 ?n))
         (retract ?f2)
-        (printout t "kiri atas probed " ?x1 ?y1 crlf)
+        ;(printout t "Probe " ?x1 " " ?y1 crlf)
     )
 )
 
@@ -522,8 +523,7 @@
     then
         (assert(probed ?x1 ?y1 ?n))
         (retract ?f2)
-        (printout t "kiri tengah probed " ?x1 ?y1 crlf)
-
+        ;(printout t "Probe " ?x1 " " ?y1 crlf)
     )
 )
 
@@ -540,7 +540,7 @@
     then
         (assert(probed ?x1 ?y1 ?n))
         (retract ?f2)
-        (printout t "kiri bawah probed " ?x1 ?y1 crlf)
+        ;(printout t "Probe " ?x1 " " ?y1 crlf)
     )
 )
 
@@ -557,7 +557,7 @@
     then
         (assert(probed ?x1 ?y1 ?n))
         (retract ?f2)
-        (printout t "kanan atas probed " ?x1 ?y1 crlf)
+        ;(printout t "Probe " ?x1 " " ?y1 crlf)
     )
 )
 
@@ -575,7 +575,7 @@
     then
         (assert(probed ?x1 ?y1 ?n))
         (retract ?f2)
-        (printout t "kanan tengah probed " ?x1 ?y1 crlf)
+        ;(printout t "Probe " ?x1 " " ?y1 crlf)
     )
 )
 
@@ -592,7 +592,7 @@
     then
         (assert(probed ?x1 ?y1 ?n))
         (retract ?f2)
-        (printout t "kanan bawah probed " ?x1 ?y1 crlf)
+        ;(printout t "Probe " ?x1 " " ?y1 crlf)
     )
 )
 
@@ -609,7 +609,7 @@
     then
         (assert(probed ?x1 ?y1 ?n))
         (retract ?f2)
-        (printout t "tengah atas probed " ?x1 ?y1 crlf)
+        ;(printout t "Probe " ?x1 " " ?y1 crlf)
     )
 )
 
@@ -626,7 +626,7 @@
     then
         (assert(probed ?x1 ?y1 ?n))
         (retract ?f2)
-        (printout t "tengah bawah probed " ?x1 ?y1 crlf)
+        ;(printout t "Probe " ?x1 " " ?y1 crlf)
     )
 )
 
@@ -664,7 +664,8 @@
 ;            (assert (around_closed ?x ?y (- ?a 1)))
             (assert (update_sekitar ?cekx ?ceky))
 
-            (printout t "Bagian Atas" ?x ?y crlf)
+            ;(printout t "Bagian Atas" ?x ?y crlf)
+            ;(printout t "Flag " ?cekx " " ?ceky crlf)
     )
 
     ;sejajar
@@ -683,7 +684,8 @@
             (retract ?tutup)
             (retract ?total)
 
-            (printout t "Sejajar" ?x ?y crlf)
+            ;(printout t "Sejajar" ?x ?y crlf)
+            ;(printout t "Flag " ?cekx " " ?ceky crlf)
     )
 
     ;bawah
@@ -703,7 +705,8 @@
             (retract ?tutup)
             (retract ?total)
 
-            (printout t "Bawah" ?x ?y crlf)
+            ;(printout t "Bawah" ?x ?y crlf)
+            ;(printout t "Flag " ?cekx " " ?ceky crlf)
     )
 )
 
@@ -890,8 +893,8 @@
     (test (eq ?x ?y))
     =>
     (assert (win))
-    (printout t "YEYYY MENANG" crlf)
-    (printout t "" crlf)
+    ;(printout t "You have won the game! :D" crlf)
+    ;(printout t "" crlf)
 )
 
 (defrule kalah
@@ -899,8 +902,8 @@
     (probed ?x ?y -1)
     =>
     (assert (kalah))
-    (printout t ":( KALAH" crlf)
-    (printout t "" crlf)
+    ;(printout t "Sorry, you lose! :(" crlf)
+    ;(printout t "" crlf)
 )
     
 
