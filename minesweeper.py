@@ -1,6 +1,8 @@
 import clips
 
 def score(bombs, board_size):
+    matrix = [['X' for i in range (board_size)] for j in range(board_size)]
+
     fact_array = []
     fact_string = "(board " + str(board_size) + " " + str(board_size) + ")"
     fact_array.append(fact_string)
@@ -16,6 +18,7 @@ def score(bombs, board_size):
        score = -1
        fact_string = "(closed " + str(x_bomb) + " " + str(y_bomb) + " " + str(score) + ")"
        fact_array.append(fact_string)
+       matrix[y_bomb][x_bomb]=str(score)
 
     for i in range (board_size):
         for j in range (board_size):
@@ -36,6 +39,7 @@ def score(bombs, board_size):
                         score += 1
                 fact_string = "(closed " + str(i) + " " + str(j) + " " + str(score) + ")"
                 fact_array.append(fact_string)
+                matrix[j][i] = str(score)
             # print(fact_string)
     for i in range (board_size):
         for j in range (board_size):
@@ -44,7 +48,19 @@ def score(bombs, board_size):
             fact_string2 = "(around_closed " + str(i) + " " + str(j) + " " + str(0) + ")"
             fact_array.append(fact_string2)
 
-    return fact_array
+    return fact_array, matrix
+
+def printmatrix(matrix,b_size):
+    for i in range (b_size):
+        for j in range (b_size):
+            if (int(matrix[i][j])==-1):
+                print(matrix[i][j], end=" ")
+            elif (int(matrix[i][j])<10):
+                print(matrix[i][j], end="  ")
+            else:
+                print(matrix[i][j], end=" ")
+            if (j==b_size-1):
+                print("")
 
 # Read info from txt
 file = open("init.txt", "r")
@@ -83,7 +99,7 @@ env = clips.Environment()
 
 env.load('ms.clp')
 # Insert initial facts to CLIPS
-initial_board_fact = score(bombs, board_size)
+initial_board_fact, matrix  = score(bombs, board_size)
 for fact in initial_board_fact:
     print(fact)
 print ("factss printed")
@@ -91,6 +107,8 @@ for i in range (len(initial_board_fact)):
     fact_string = initial_board_fact[i]
     fact = env.assert_string(fact_string)
 
+print("Initial Matrix")
+printmatrix(matrix,init[0])
 # for rule in env.rules():
 #     print(rule)
 
@@ -101,3 +119,4 @@ for fact in env.facts():
     print(fact)
 # print(env.rules())
 # print(env.facts())
+
