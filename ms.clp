@@ -458,12 +458,16 @@
     (declare (salience 10))
     ?f1 <- (cek_flag ?x ?y ?a ?b)
     ?f2 <- (around_flag ?x ?y ?n)
+    ?f3 <- (around_closed ?x ?y ?m)
     (flag ?a ?b ?z)
+    (test (> ?m 0))
     =>
     (bind ?n_flag (+ ?n 1))
+    (bind ?n_close (- ?m 1))
     (retract ?f1)
     (retract ?f2)
     (assert (around_flag ?x ?y ?n_flag))
+    (assert (around_closed ?x ?y ?n_close))
     (printout t ?x " " ?y " " ?a " " ?b  crlf)
 )
 
@@ -641,6 +645,7 @@
         then
 ;            (retract ?sekitar)
 ;            (retract ?sekitar_tutup)
+            (retract ?tutup)
             (retract ?sisa)
             (assert (flag ?cekx ?ceky ?z))
 ;            (assert (around_flag ?x ?y (+ ?n 1)))
@@ -656,7 +661,8 @@
     (and (eq ?cekx (+ ?x 1)) (eq ?ceky ?y))) ;sejajar-kanan
         then
 ;            (retract ?sekitar)
-;            (retract ?sekitar_tutup)
+;            (retract ?sekitar_tutu
+            (retract ?tutup)
             (retract ?sisa)
             (assert (flag ?cekx ?ceky ?z))
 ;            (assert (around_flag ?x ?y (+ ?n 1)))
@@ -674,6 +680,7 @@
         then
 ;            (retract ?sekitar)
 ;            (retract ?sekitar_tutup)
+            (retract ?tutup)
             (retract ?sisa)
             (assert (flag ?cekx ?ceky ?z))
 ;            (assert (around_flag ?x ?y (+ ?n 1)))
