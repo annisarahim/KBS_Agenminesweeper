@@ -118,7 +118,7 @@ printmatrix(matrix,init[0])
 # for rule in env.rules():
 #     print(rule)
 win = False
-bombs=[]
+flags=[]
 while not(win):
   env.run(1)
   draw = False
@@ -129,7 +129,7 @@ while not(win):
       y = str(fact[1])
       score = str(fact[2])
       if (matrix[int(y)][int(x)] != 'F'):
-        bombs.append((fact[0],fact[1]))
+        flags.append((fact[0],fact[1]))
         matrix[int(y)][int(x)] = 'F'
         print("")
         print(fact.template.name,x,y)
@@ -156,7 +156,7 @@ while not(win):
       printmatrix(matrix, init[0]) 
 
 
-print("Bombs: ",bombs)
+print("Flags: ",flags)
 
       
 
