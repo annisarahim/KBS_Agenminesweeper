@@ -56,6 +56,7 @@ def printmatrix(matrix,b_size):
           print(matrix[i][j], end=" ")
           if (j == (b_size-1)):
             print("")
+             
 
 # Read info from txt
 file = open("init.txt", "r")
@@ -95,25 +96,29 @@ env = clips.Environment()
 env.load('ms.clp')
 # Insert initial facts to CLIPS
 initial_board_fact, matrix  = score(bombs, board_size)
-for fact in initial_board_fact:
-    print(fact)
-print ("factss printed")
+#for fact in initial_board_fact:
+#    print(fact)
+#print ("factss printed")
 i = int
 for i in range (len(initial_board_fact)):
     fact_string = initial_board_fact[i]
     fact = env.assert_string(fact_string)
 
-print("Initial Matrix")
+print("WELCOME TO MINESWEEPER!!")
+print("Let's Play!")
+
+i = input("Press enter to start!")
+
 for i in range (init[0]):
   for j in range (init[0]):
     matrix[i][j] = "."
 printmatrix(matrix,init[0])
-i = input("Press ENTER when you're ready!")
+
   
 # for rule in env.rules():
 #     print(rule)
 win = False
-
+bombs=[]
 while not(win):
   env.run(1)
   draw = False
@@ -124,6 +129,7 @@ while not(win):
       y = str(fact[1])
       score = str(fact[2])
       if (matrix[int(y)][int(x)] != 'F'):
+        bombs.append((fact[0],fact[1]))
         matrix[int(y)][int(x)] = 'F'
         print("")
         print(fact.template.name,x,y)
@@ -143,7 +149,14 @@ while not(win):
       win = True
       draw = True
       print("")
-      print("WINN KELARR")
+      print("You win!")
+      print("final matrix:")
 
     if (draw):
       printmatrix(matrix, init[0]) 
+
+
+print("Bombs: ",bombs)
+
+      
+
