@@ -484,62 +484,145 @@
 ;proberemaining
 (defrule probe-kiri-atas
     ?f1 <- (probe_remaining ?x ?y)
+    ?f2 <- (closed ?x1 ?y1 ?n)
+    (not (flag ?x1 ?y1))
+    (not (probed ?x1 ?y1))
+    (test (= ?x1 (- ?x 1)))
+    (test (= ?y1 (- ?y 1)))
     =>
-    (bind ?left (- ?x 1))
-    (bind ?up (- ?y 1)) 
-    (assert(can_probe ?left ?up))
+    (if (and (>= ?x1 0) (>= ?y1 0))
+    then
+        (assert(probed ?x1 ?y1 ?n))
+        (retract ?f2)
+        (printout t "kiri atas probed " ?x1 ?y1 crlf)
+    )
 )
 
 (defrule probe-kiri-tengah
-	?f1 <- (probe_remaining ?x ?y)
+    ?f1 <- (probe_remaining ?x ?y)
+    ?f2 <- (closed ?x1 ?y1 ?n)
+    (not (flag ?x1 ?y1))
+    (not (probed ?x1 ?y1))
+    (test (= ?x1 (- ?x 1)))
+    (test (= ?y1 ?y))
     =>
-    (bind ?left (- ?x 1))
-    (assert(can_probe ?left ?y))
+    (if (>= ?x1 0)
+    then
+        (assert(probed ?x1 ?y1 ?n))
+        (retract ?f2)
+        (printout t "kiri tengah probed " ?x1 ?y1 crlf)
+
+    )
 )
 
 (defrule probe-kiri-bawah
-	?f1 <- (probe_remaining ?x ?y)
+	  ?f1 <- (probe_remaining ?x ?y)
+    ?f2 <- (closed ?x1 ?y1 ?n)
+    ?f3 <- (board ?xb ?yb)
+    (not (flag ?x1 ?y1))
+    (not (probed ?x1 ?y1))
+    (test (= ?x1 (- ?x 1)))
+    (test (= ?y1 (+ ?y 1)))
     =>
-    (bind ?left (- ?x 1))
-    (bind ?down (+ ?y 1)) 
-    (assert(can_probe ?left ?down))
+    (if (and (>= ?x1 0) (< ?y1 ?yb)) 
+    then
+        (assert(probed ?x1 ?y1 ?n))
+        (retract ?f2)
+        (printout t "kiri bawah probed " ?x1 ?y1 crlf)
+    )
 )
 
 (defrule probe-kanan-atas
-	?f1 <- (probe_remaining ?x ?y)
-    =>
-    (bind ?right (+ ?x 1))
-    (bind ?up (- ?y 1)) 
-    (assert(can_probe ?right ?up))
+	  ?f1 <- (probe_remaining ?x ?y)
+    ?f2 <- (closed ?x1 ?y1 ?n)
+    ?f3 <- (board ?xb ?yb)
+    (not (flag ?x1 ?y1))
+    (not (probed ?x1 ?y1))
+    (test (= ?x1 (+ ?x 1)))
+    (test (= ?y1 (- ?y 1)))
+    => 
+    (if (and (< ?x1 ?xb) (>= ?y1 0))
+    then
+        (assert(probed ?x1 ?y1 ?n))
+        (retract ?f2)
+        (printout t "kanan atas probed " ?x1 ?y1 crlf)
+    )
 )
 
 (defrule probe-kanan-tengah
-	?f1 <- (probe_remaining ?x ?y)
+	  ?f1 <- (probe_remaining ?x ?y)
+    ?f2 <- (closed ?x1 ?y1 ?n)
+    ?f3 <- (board ?xb ?yb)
+    (not (flag ?x1 ?y1))
+    (not (probed ?x1 ?y1))
+    (test (= ?x1 (+ ?x 1)))
+    (test (= ?y1 ?y))
     =>
-    (bind ?right (+ ?x 1))
-    (assert(can_probe ?right ?y))
+    ;(bind ?right (+ ?x 1))
+    (if (< ?x1 ?xb)
+    then
+        (assert(probed ?x1 ?y1 ?n))
+        (retract ?f2)
+        (printout t "kanan tengah probed " ?x1 ?y1 crlf)
+    )
 )
 
 (defrule probe-kanan-bawah
-	?f1 <- (probe_remaining ?x ?y)
+	  ?f1 <- (probe_remaining ?x ?y)
+    ?f2 <- (closed ?x1 ?y1 ?n)
+    ?f3 <- (board ?xb ?yb)
+    (not (flag ?x1 ?y1))
+    (not (probed ?x1 ?y1))
+    (test (= ?x1 (+ ?x 1)))
+    (test (= ?y1 (+ ?y 1)))
     =>
-    (bind ?right (+ ?x 1))
-    (bind ?down (+ ?y 1)) 
-    (assert(can_probe ?right ?down))
+    (if (and (< ?x1 ?xb) (< ?y1 ?yb))
+    then
+        (assert(probed ?x1 ?y1 ?n))
+        (retract ?f2)
+        (printout t "kanan bawah probed " ?x1 ?y1 crlf)
+    )
 )
 
 (defrule probe-tengah-atas
-	?f1 <- (probe_remaining ?x ?y)
+    ?f1 <- (probe_remaining ?x ?y)
+    ?f2 <- (closed ?x1 ?y1 ?n)
+    ?f3 <- (board ?xb ?yb)
+    (not (flag ?x1 ?y1))
+    (not (probed ?x1 ?y1))
+    (test (= ?x1 ?x))
+    (test (= ?y1 (- ?y 1)))
     =>
-    (bind ?up (- ?y 1)) 
-    (assert(can_probe ?x ?up))
+    (if (>= ?y1 0)
+    then
+        (assert(probed ?x1 ?y1 ?n))
+        (retract ?f2)
+        (printout t "tengah atas probed " ?x1 ?y1 crlf)
+    )
 )
 
 (defrule probe-tengah-bawah
 	?f1 <- (probe_remaining ?x ?y)
+    ?f2 <- (closed ?x1 ?y1 ?n)
+    ?f3 <- (board ?xb ?yb)
+    (not (flag ?x1 ?y1))
+    (not (probed ?x1 ?y1))
+    (test (= ?x1 ?x))
+    (test (= ?y1 (+ ?y 1)))
     =>
-    (bind ?down (+ ?y 1)) 
-    (assert(can_probe ?x ?down))
+    (if (< ?y1 ?yb) 
+    then
+        (assert(probed ?x1 ?y1 ?n))
+        (retract ?f2)
+        (printout t "tengah bawah probed " ?x1 ?y1 crlf)
+    )
+)
+
+(defrule retract-proberemaining
+    (declare (salience -20))
+    ?f1 <- (probe_remaining ?x ?y)
+    =>
+    (retract ?f1)
 )
 
 (defrule flag_remain
@@ -559,6 +642,7 @@
         then
             (retract ?sekitar)
             (retract ?sekitar_tutup)
+            (retract ?sisa)
             (assert (flag ?cekx ?ceky ?z))
             (assert (around_flag ?x ?y (+ ?n 1)))
             (assert (total_flag (+ ?t 1)))
@@ -573,6 +657,7 @@
         then
             (retract ?sekitar)
             (retract ?sekitar_tutup)
+            (retract ?sisa)
             (assert (flag ?cekx ?ceky ?z))
             (assert (around_flag ?x ?y (+ ?n 1)))
             (assert (total_flag (+ ?t 1)))
@@ -588,6 +673,7 @@
         then
             (retract ?sekitar)
             (retract ?sekitar_tutup)
+            (retract ?sisa)
             (assert (flag ?cekx ?ceky ?z))
             (assert (around_flag ?x ?y (+ ?n 1)))
             (assert (total_flag (+ ?t 1)))
