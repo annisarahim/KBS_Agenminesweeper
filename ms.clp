@@ -1,6 +1,7 @@
 ; DELETE FACTS DIBAWAH INI DULU KL MAU JALANIN PAKE PYTHONN
 (deffacts board
     (board 4 4)
+    (total_flag 0)
     (closed 2 1 -1)
     (closed 3 2 -1)
     (closed 0 0 0)
@@ -100,6 +101,7 @@
 ; Ini dia udah bisa ngejalanin semua yang nilai nya 0
 ; Masih belum bisa bagian syntax(score (+ ?x 1) ?y ?s)
 ; Gabisa masukin (+ ?x 1) ke dalam variabel jadi bingung akses rulenya gimana
+    (declare (salience 20))
     ?tilecek_zero <- (probed ?x ?y 0)
     ?board <- (board ?xb ?yb)
     ?cek <- (not_cek_probe ?x ?y)
@@ -218,6 +220,7 @@
 (defrule probe
 ; Lanjutan dari probe-zero
 ; Tile can_probe dibuka dan dilengkapi dengan score yang sesuai
+    (declare(salience 20))
     ?del_can <- (can_probe ?x ?y)
     ?del_score <- (closed ?x ?y ?n)
     =>
@@ -228,22 +231,45 @@
     (printout t "hapuss score"?x ?y crlf)
 )
 
-;(defrule aksi-1
+(defrule aksi-1
 ; Aksi untuk kondisi 1
 ; Jika jumlah tile yang tertutup disekitar tile dengan score n > 0
 ; masih lebih besar daripada jumlah tile yang di tandai (flag)
 ; maka, tandai semua tile yang tertutup dan belum di-flag
-;    (probed ?x ?y ?n)
-;    =>
-;    (if )
-
-;)
+    (probed ?x ?y ?n)
+    ?f1 <- (around_closed ?x ?y ?n_close)
+    ?f2 <- (around_flag ?x ?y ?n_flag)
+    (test (= ?n_close (- ?n ?n_flag)))
+    (test (> ?n 0))
+    =>
+    (assert (flag_remaining ?x ?y))
+)
+(defrule aksi-2
+; Aksi untuk kondisi 2
+; Jika jumlah tile yang di-flag disekitar tile sama dengan score n > 0
+; sama daripada jumlah tile yang di tandai (flag)
+; maka, tandai semua tile yang tertutup dan belum di-flag
+    (probed ?x ?y ?n)
+    ?f1 <- (around_closed ?x ?y ?n_close)
+    ?f2 <- (around_flag ?x ?y ?n_flag)
+    (test (= ?n_flag ?n))
+    (test (> ?n_close 0))
+    =>
+    (assert (probe_remaining ?x ?y))
+)
 
 (defrule clean-can_probe
 	?f1 <- (can_probe ?x ?y)
 	(probed ?x ?y ?n)
 	=>
 	(retract ?f1)
+)
+
+(defrule update_probe
+	(probed ?x ?y ?n)
+    (test (> ?n 0))
+	=>
+	(assert (please_update ?x ?y ?n))
 )
 
 (defrule clean-not_cek_probe
@@ -269,11 +295,13 @@
 )
 
 (defrule update-around_closed
-	(probed ?x ?y ?n)
+    ?a <- (please_update ?x ?y ?n)
     (board ?xb ?yb)
 	(around_closed ?x ?y ?m)
+    (around_flag ?x ?y ?o)
 	(test (neq ?n 0))
-	(test (eq ?m 0))
+ ;   (test (eq ?m 0))
+  ;  (test (eq ?o 0))
 	=>
 	(bind ?xleft (- ?x 1))
     (bind ?xright (+ ?x 1))
@@ -286,6 +314,9 @@
             (assert (cek_close ?x ?y ?xleft ?y))
             (assert (cek_close ?x ?y ?xleft ?ydown))
             (assert (cek_close ?x ?y ?x ?ydown))
+            (assert (cek_flag ?x ?y ?xleft ?y))
+            (assert (cek_flag ?x ?y ?xleft ?ydown))
+            (assert (cek_flag ?x ?y ?x ?ydown))
         )
     ; sudut kanan bawah
     (if (and (eq ?x (- ?xb 1)) (eq ?y (- ?yb 1)))
@@ -293,6 +324,9 @@
             (assert (cek_close ?x ?y ?xleft ?y))
             (assert (cek_close ?x ?y ?xleft ?yup))
             (assert (cek_close ?x ?y ?x ?yup))
+            (assert (cek_flag ?x ?y ?xleft ?y))
+            (assert (cek_flag ?x ?y ?xleft ?yup))
+            (assert (cek_flag ?x ?y ?x ?yup))
         )
     ; sudut kiri bawah
     (if (and (eq ?x 0) (eq ?y (- ?yb 1)))
@@ -300,6 +334,9 @@
             (assert (cek_close ?x ?y ?xright ?y))
             (assert (cek_close ?x ?y ?xright ?yup))
             (assert (cek_close ?x ?y ?x ?yup))
+            (assert (cek_flag ?x ?y ?xright ?y))
+            (assert (cek_flag ?x ?y ?xright ?yup))
+            (assert (cek_flag ?x ?y ?x ?yup))
         )
     ; sudut kiri atas
     (if (and (eq ?x 0) (eq ?y 0))
@@ -307,6 +344,9 @@
             (assert (cek_close ?x ?y ?xright ?y))
             (assert (cek_close ?x ?y ?xright ?ydown))
             (assert (cek_close ?x ?y ?x ?ydown))
+            (assert (cek_flag ?x ?y ?xright ?y))
+            (assert (cek_flag ?x ?y ?xright ?ydown))
+            (assert (cek_flag ?x ?y ?x ?ydown))
     )
     ; bawah
     (if (and (neq ?x (- ?xb 1)) (and (neq ?x 0) (eq ?y (- ?yb 1))))
@@ -316,6 +356,11 @@
             (assert (cek_close ?x ?y ?x ?yup))
             (assert (cek_close ?x ?y ?xleft ?y))
             (assert (cek_close ?x ?y ?xleft ?yup))
+            (assert (cek_flag ?x ?y ?xright ?y))
+            (assert (cek_flag ?x ?y ?xright ?yup))
+            (assert (cek_flag ?x ?y ?x ?yup))
+            (assert (cek_flag ?x ?y ?xleft ?y))
+            (assert (cek_flag ?x ?y ?xleft ?yup))
     )
     ; sisi kiri
     (if (and (neq ?y 0) (and (neq ?y (- ?yb 1)) (eq ?x 0)))
@@ -325,6 +370,11 @@
         (assert (cek_close ?x ?y ?x ?ydown))
         (assert (cek_close ?x ?y ?xright ?yup))
         (assert (cek_close ?x ?y ?x ?yup))
+        (assert (cek_flag ?x ?y ?xright ?y))
+        (assert (cek_flag ?x ?y ?xright ?ydown))
+        (assert (cek_flag ?x ?y ?x ?ydown))
+        (assert (cek_flag ?x ?y ?xright ?yup))
+        (assert (cek_flag ?x ?y ?x ?yup))
     )
     ; atas
     (if (and (neq ?x (- ?xb 1)) (and (neq ?x 0) (eq ?y 0)))
@@ -334,6 +384,11 @@
             (assert (cek_close ?x ?y ?x ?ydown))
             (assert (cek_close ?x ?y ?xleft ?y))
             (assert (cek_close ?x ?y ?xleft ?ydown))
+            (assert (cek_flag ?x ?y ?xright ?y))
+            (assert (cek_flag ?x ?y ?xright ?ydown))
+            (assert (cek_flag ?x ?y ?x ?ydown))
+            (assert (cek_flag ?x ?y ?xleft ?y))
+            (assert (cek_flag ?x ?y ?xleft ?ydown))
     )
     ; sisi kanan
     (if (and (neq ?y 0) (and (neq ?y (- ?yb 1)) (eq ?x (- ?xb 1))))
@@ -343,6 +398,11 @@
             (assert (cek_close ?x ?y ?x ?yup))
             (assert (cek_close ?x ?y ?xleft ?ydown))
             (assert (cek_close ?x ?y ?x ?ydown))
+            (assert (cek_flag ?x ?y ?xleft ?y))
+            (assert (cek_flag ?x ?y ?xleft ?yup))
+            (assert (cek_flag ?x ?y ?x ?yup))
+            (assert (cek_flag ?x ?y ?xleft ?ydown))
+            (assert (cek_flag ?x ?y ?x ?ydown))
     )
     ; tengah
     (if (and (neq ?x 0) (and (neq ?y 0) (and (neq ?y (- ?yb 1)) (neq ?x (- ?xb 1)))))
@@ -355,10 +415,21 @@
             (assert (cek_close ?x ?y ?xright ?yup))
             (assert (cek_close ?x ?y ?x ?yup))
             (assert (cek_close ?x ?y ?xleft ?yup))
+            (assert (cek_flag ?x ?y ?xright ?y))
+            (assert (cek_flag ?x ?y ?xright ?ydown))
+            (assert (cek_flag ?x ?y ?x ?ydown))
+            (assert (cek_flag ?x ?y ?xleft ?y))
+            (assert (cek_flag ?x ?y ?xleft ?ydown))
+            (assert (cek_flag ?x ?y ?xright ?yup))
+            (assert (cek_flag ?x ?y ?x ?yup))
+            (assert (cek_flag ?x ?y ?xleft ?yup))
     )
+    (retract ?a)
+    
 )
 
 (defrule cek-close-true
+    (declare (salience 10))
     ?f1 <- (cek_close ?x ?y ?a ?b)
     ?f2 <- (around_closed ?x ?y ?n)
     (closed ?a ?b ?z)
@@ -367,6 +438,7 @@
     (retract ?f1)
     (retract ?f2)
     (assert (around_closed ?x ?y ?n_close))
+    
     (printout t ?x " " ?y " " ?a " " ?b  crlf)
 )
 
@@ -376,7 +448,38 @@
     =>
     (retract ?f1)
 )
+(defrule cek-close-probed-1
+    ?f1 <- (cek_close ?x ?y ?a ?b)
+    (flag ?a ?b ?n)
+    =>
+    (retract ?f1)
+)
 
+(defrule cek-flag-true
+    (declare (salience 10))
+    ?f1 <- (cek_flag ?x ?y ?a ?b)
+    ?f2 <- (around_flag ?x ?y ?n)
+    (flag ?a ?b ?z)
+    =>
+    (bind ?n_flag (+ ?n 1))
+    (retract ?f1)
+    (retract ?f2)
+    (assert (around_flag ?x ?y ?n_flag))
+    (printout t ?x " " ?y " " ?a " " ?b  crlf)
+)
+
+(defrule cek-flag-probed
+    ?f1 <- (cek_flag ?x ?y ?a ?b)
+    (probed ?a ?b ?n)
+    =>
+    (retract ?f1)
+)
+(defrule cek-flag-probed-1
+    ?f1 <- (cek_flag ?x ?y ?a ?b)
+    (closed ?a ?b ?n)
+    =>
+    (retract ?f1)
+)
 
 ;proberemaining
 (defrule probe-kiri-atas
@@ -437,4 +540,60 @@
     =>
     (bind ?down (+ ?y 1)) 
     (assert(can_probe ?x ?down))
+)
+
+(defrule flag_remain
+    ?sisa <- (flag_remaining ?x ?y)
+    ?sekitar <- (around_flag ?x ?y ?n)
+    ?tutup <- (closed ?cekx ?ceky ?z)
+    ?total <- (total_flag ?t)
+    ?sekitar_tutup <- (around_closed ?x ?y ?a)
+    (not (flag ?cekx ?ceky ?z))
+    =>
+
+    ;ini kondisi -> lg ngecek bagian mana dari tile sekarang 
+    ;atas
+    (if (or (and (eq ?cekx (+ ?x 1)) (eq ?ceky (- ?y 1))) ;atas-kanan
+    (or (and (eq ?cekx (- ?x 1)) (eq ?ceky (- ?y 1))) ;atas-kiri
+    (and (eq ?cekx ?x) (eq ?ceky (- ?y 1))))) ;atas-tengah
+        then
+            (retract ?sekitar)
+            (retract ?sekitar_tutup)
+            (assert (flag ?cekx ?ceky ?z))
+            (assert (around_flag ?x ?y (+ ?n 1)))
+            (assert (total_flag (+ ?t 1)))
+            (assert (around_closed ?x ?y (- ?a 1)))
+
+            (printout t "Bagian Atas" ?x ?y crlf)
+    )
+
+    ;sejajar
+    (if (or (and (eq ?cekx (- ?x 1)) (eq ?ceky ?y)) ;sejajar-kiri
+    (and (eq ?cekx (+ ?x 1)) (eq ?ceky ?y))) ;sejajar-kanan
+        then
+            (retract ?sekitar)
+            (retract ?sekitar_tutup)
+            (assert (flag ?cekx ?ceky ?z))
+            (assert (around_flag ?x ?y (+ ?n 1)))
+            (assert (total_flag (+ ?t 1)))
+            (assert (around_closed ?x ?y (- ?a 1)))
+
+            (printout t "Sejajar" ?x ?y crlf)
+    )
+
+    ;bawah
+    (if (or (and (eq ?cekx (+ ?x 1)) (eq ?ceky (+ ?y 1))) ;bawah-kanan
+    (or (and (eq ?cekx (- ?x 1)) (eq ?ceky (+ ?y 1))) ;bawah-kiri
+    (and (eq ?cekx ?x) (eq ?ceky (+ ?y 1))))) ;bawah-tengah
+        then
+            (retract ?sekitar)
+            (retract ?sekitar_tutup)
+            (assert (flag ?cekx ?ceky ?z))
+            (assert (around_flag ?x ?y (+ ?n 1)))
+            (assert (total_flag (+ ?t 1)))
+            (assert (around_closed ?x ?y (- ?a 1)))
+
+            (printout t "Bawah" ?x ?y crlf)
+    )
+
 )
