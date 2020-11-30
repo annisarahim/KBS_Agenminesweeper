@@ -53,10 +53,9 @@ def score(bombs, board_size):
 def printmatrix(matrix,b_size):
     for i in range (b_size):
         for j in range (b_size):
-            if (j==b_size-1):
-                print("")
-            else:
-              print(matrix[i][j], end=" ")
+          print(matrix[i][j], end=" ")
+          if (j == (b_size-1)):
+            print("")
 
 # Read info from txt
 file = open("init.txt", "r")
@@ -109,7 +108,7 @@ for i in range (init[0]):
   for j in range (init[0]):
     matrix[i][j] = "."
 printmatrix(matrix,init[0])
-i = input()
+i = input("Press ENTER when you're ready!")
   
 # for rule in env.rules():
 #     print(rule)
