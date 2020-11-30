@@ -103,6 +103,7 @@ initial_board_fact, matrix  = score(bombs, board_size)
 for fact in initial_board_fact:
     print(fact)
 print ("factss printed")
+i = int
 for i in range (len(initial_board_fact)):
     fact_string = initial_board_fact[i]
     fact = env.assert_string(fact_string)
@@ -115,8 +116,20 @@ printmatrix(matrix,init[0])
 # env.reset()
 env.run()
 # env.reset()
+
+print("flags: ")
+
+flags = []
 for fact in env.facts():
-    print(fact)
+    if fact.template.name == 'flag':
+        print(fact)
+        flags.append(fact)
+print(flags)
+
+
+
+
+
 # print(env.rules())
 # print(env.facts())
 
