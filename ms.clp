@@ -499,7 +499,7 @@
     (not (probed ?x1 ?y1))
     (test (= ?x1 (- ?x 1)))
     (test (= ?y1 (- ?y 1)))
-    =>
+    => 
     (if (and (>= ?x1 0) (>= ?y1 0))
     then
         (assert (probed ?x1 ?y1 ?n))
@@ -702,33 +702,200 @@
     )
 )
 
-(defrule update-sekitar
-    ?f1 <- (update_sekitar ?x ?y)
-    (board ?xb ?yb)
+(defrule update-sekitar-kanan-atas
+    (update_sekitar ?x ?y)
+    (probed ?cekx ?ceky ?n_close)
     =>
-    (bind ?xleft (- ?x 1))
-    (bind ?xright (+ ?x 1))
-    (bind ?ydown (+ ?y 1))
-    (bind ?yup (- ?y 1))
-    (retract ?f1)
-
-    (if (and (or (> ?xleft 0) (< ?xright ?xb)) (> ?yup 0))
-    then 
-        (assert (please_update ?x ?yup))
-        (assert (please_update ?xright ?yup))
-        (assert (please_update ?xleft ?yup))
-    )
-
-    (if (and (or (> ?xleft 0) (< ?xright ?xb)) (< ?ydown ?yb))
-    then
-        (assert (please_update ?xright ?ydown))
-        (assert (please_update ?x ?ydown))
-        (assert (please_update ?xleft ?ydown))
-    )
-
-    (if (or (> ?xleft 0) (< ?xright ?xb))
-    then 
-        (assert (please_update ?xleft ?y))
-        (assert (please_update ?xright ?y))
+    (if (and (eq ?cekx (+ ?x 1)) (eq ?ceky (- ?y 1)))
+        then 
+        (assert (please_update ?cekx ?ceky))
     )
 )
+
+(defrule update-sekitar-kanan-atas-1
+    (update_sekitar ?x ?y)
+    (flag ?cekx ?ceky ?n_close)
+    =>
+    (if (and (eq ?cekx (+ ?x 1)) (eq ?ceky (- ?y 1)))
+        then 
+        (assert (please_update ?cekx ?ceky))
+    )
+)
+
+(defrule update-sekitar-tengah-atas
+    (update_sekitar ?x ?y)
+    (probed ?cekx ?ceky ?n_close)
+    =>
+    (if (and (eq ?cekx ?x) (eq ?ceky (- ?y 1)))
+        then 
+        (assert (please_update ?cekx ?ceky))
+    )
+)
+
+(defrule update-sekitar-tengah-atas-1
+    (update_sekitar ?x ?y)
+    (flag ?cekx ?ceky ?n_close)
+    =>
+    (if (and (eq ?cekx ?x) (eq ?ceky (- ?y 1)))
+        then 
+        (assert (please_update ?cekx ?ceky))
+    )
+)
+
+(defrule update-sekitar-kiri-atas
+    (update_sekitar ?x ?y)
+    (probed ?cekx ?ceky ?n_close)
+    =>
+    (if (and (eq ?cekx (- ?x 1)) (eq ?ceky (- ?y 1)))
+        then 
+        (assert (please_update ?cekx ?ceky))
+    )
+)
+
+(defrule update-sekitar-kiri-atas-1
+    (update_sekitar ?x ?y)
+    (flag ?cekx ?ceky ?n_close)
+    =>
+    (if (and (eq ?cekx (- ?x 1)) (eq ?ceky (- ?y 1)))
+        then 
+        (assert (please_update ?cekx ?ceky))
+    )
+)
+
+(defrule update-sekitar-kiri
+    (update_sekitar ?x ?y)
+    (probed ?cekx ?ceky ?n_close)
+    =>
+    (if (and (eq ?cekx (- ?x 1)) (eq ?ceky ?y))
+        then 
+        (assert (please_update ?cekx ?ceky))
+    )
+)
+
+(defrule update-sekitar-kiri-1
+    (update_sekitar ?x ?y)
+    (flag ?cekx ?ceky ?n_close)
+    =>
+    (if (and (eq ?cekx (- ?x 1)) (eq ?ceky ?y))
+        then 
+        (assert (please_update ?cekx ?ceky))
+    )
+)
+
+(defrule update-sekitar-kanan
+    (update_sekitar ?x ?y)
+    (flag ?cekx ?ceky ?n_close)
+    =>
+    (if (and (eq ?cekx (+ ?x 1)) (eq ?ceky ?y))
+        then 
+        (assert (please_update ?cekx ?ceky))
+    )
+)
+
+(defrule update-sekitar-kanan-1
+    (update_sekitar ?x ?y)
+    (probed ?cekx ?ceky ?n_close)
+    =>
+    (if (and (eq ?cekx (+ ?x 1)) (eq ?ceky ?y))
+        then 
+        (assert (please_update ?cekx ?ceky))
+    )
+)
+
+(defrule update-sekitar-kanan-bawah
+    (update_sekitar ?x ?y)
+    (probed ?cekx ?ceky ?n_close)
+    =>
+    (if (and (eq ?cekx (+ ?x 1)) (eq ?ceky (+ ?y 1)))
+        then 
+        (assert (please_update ?cekx ?ceky))
+    )
+)
+
+(defrule update-sekitar-kanan-bawah-1
+    (update_sekitar ?x ?y)
+    (flag ?cekx ?ceky ?n_close)
+    =>
+    (if (and (eq ?cekx (+ ?x 1)) (eq ?ceky (+ ?y 1)))
+        then 
+        (assert (please_update ?cekx ?ceky))
+    )
+)
+
+(defrule update-sekitar-tengah-bawah
+    (update_sekitar ?x ?y)
+    (flag ?cekx ?ceky ?n_close)
+    =>
+    (if (and (eq ?cekx ?x) (eq ?ceky (+ ?y 1)))
+        then 
+        (assert (please_update ?cekx ?ceky))
+    )
+)
+
+(defrule update-sekitar-tengah-bawah-1
+    (update_sekitar ?x ?y)
+    (probed ?cekx ?ceky ?n_close)
+    =>
+    (if (and (eq ?cekx ?x) (eq ?ceky (+ ?y 1)))
+        then 
+        (assert (please_update ?cekx ?ceky))
+    )
+)
+
+(defrule update-sekitar-kiri-bawah
+    (update_sekitar ?x ?y)
+    (probed ?cekx ?ceky ?n_close)
+    =>
+    (if (and (eq ?cekx (+ ?x 1)) (eq ?ceky (+ ?y 1)))
+        then 
+        (assert (please_update ?cekx ?ceky))
+    )
+)
+
+(defrule update-sekitar-kiri-bawah-1
+    (update_sekitar ?x ?y)
+    (flag ?cekx ?ceky ?n_close)
+    =>
+    (if (and (eq ?cekx (+ ?x 1)) (eq ?ceky (+ ?y 1)))
+        then 
+        (assert (please_update ?cekx ?ceky))
+    )
+)
+
+(defrule retract-updatesekitar
+    (declare (salience -20))
+    ?f1 <- (update_sekitar ?x ?y)
+    =>
+    (retract ?f1)
+)
+
+
+
+
+
+;     (bind ?xleft (- ?x 1))
+;     (bind ?xright (+ ?x 1))
+;     (bind ?ydown (+ ?y 1))
+;     (bind ?yup (- ?y 1))
+;     (retract ?f1)
+
+;     (if (and (or (> ?xleft 0) (< ?xright ?xb)) (> ?yup 0))
+;     then 
+;         (assert (please_update ?x ?yup))
+;         (assert (please_update ?xright ?yup))
+;         (assert (please_update ?xleft ?yup))
+;     )
+
+;     (if (and (or (> ?xleft 0) (< ?xright ?xb)) (< ?ydown ?yb))
+;     then
+;         (assert (please_update ?xright ?ydown))
+;         (assert (please_update ?x ?ydown))
+;         (assert (please_update ?xleft ?ydown))
+;     )
+
+;     (if (or (> ?xleft 0) (< ?xright ?xb))
+;     then 
+;         (assert (please_update ?xleft ?y))
+;         (assert (please_update ?xright ?y))
+;     )
+; )
