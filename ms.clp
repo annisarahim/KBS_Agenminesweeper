@@ -425,7 +425,6 @@
             (assert (cek_flag ?x ?y ?xleft ?yup))
     )
     (retract ?a)
-    
 )
 
 (defrule cek-close-true
@@ -492,7 +491,7 @@
     =>
     (if (and (>= ?x1 0) (>= ?y1 0))
     then
-        (assert(probed ?x1 ?y1 ?n))
+        (assert (probed ?x1 ?y1 ?n))
         (retract ?f2)
         (printout t "kiri atas probed " ?x1 ?y1 crlf)
     )
@@ -533,7 +532,7 @@
 )
 
 (defrule probe-kanan-atas
-	  ?f1 <- (probe_remaining ?x ?y)
+    ?f1 <- (probe_remaining ?x ?y)
     ?f2 <- (closed ?x1 ?y1 ?n)
     ?f3 <- (board ?xb ?yb)
     (not (flag ?x1 ?y1))
@@ -550,7 +549,7 @@
 )
 
 (defrule probe-kanan-tengah
-	  ?f1 <- (probe_remaining ?x ?y)
+	?f1 <- (probe_remaining ?x ?y)
     ?f2 <- (closed ?x1 ?y1 ?n)
     ?f3 <- (board ?xb ?yb)
     (not (flag ?x1 ?y1))
@@ -568,7 +567,7 @@
 )
 
 (defrule probe-kanan-bawah
-	  ?f1 <- (probe_remaining ?x ?y)
+	?f1 <- (probe_remaining ?x ?y)
     ?f2 <- (closed ?x1 ?y1 ?n)
     ?f3 <- (board ?xb ?yb)
     (not (flag ?x1 ?y1))
@@ -627,10 +626,10 @@
 
 (defrule flag_remain
     ?sisa <- (flag_remaining ?x ?y)
-    ?sekitar <- (around_flag ?x ?y ?n)
+;    ?sekitar <- (around_flag ?x ?y ?n)
     ?tutup <- (closed ?cekx ?ceky ?z)
     ?total <- (total_flag ?t)
-    ?sekitar_tutup <- (around_closed ?x ?y ?a)
+;    ?sekitar_tutup <- (around_closed ?x ?y ?a)
     (not (flag ?cekx ?ceky ?z))
     =>
 
@@ -640,13 +639,14 @@
     (or (and (eq ?cekx (- ?x 1)) (eq ?ceky (- ?y 1))) ;atas-kiri
     (and (eq ?cekx ?x) (eq ?ceky (- ?y 1))))) ;atas-tengah
         then
-            (retract ?sekitar)
-            (retract ?sekitar_tutup)
+;            (retract ?sekitar)
+;            (retract ?sekitar_tutup)
             (retract ?sisa)
             (assert (flag ?cekx ?ceky ?z))
-            (assert (around_flag ?x ?y (+ ?n 1)))
+;            (assert (around_flag ?x ?y (+ ?n 1)))
             (assert (total_flag (+ ?t 1)))
-            (assert (around_closed ?x ?y (- ?a 1)))
+;            (assert (around_closed ?x ?y (- ?a 1)))
+            (assert (please_update ?cekx ?ceky ?z))
 
             (printout t "Bagian Atas" ?x ?y crlf)
     )
@@ -655,13 +655,14 @@
     (if (or (and (eq ?cekx (- ?x 1)) (eq ?ceky ?y)) ;sejajar-kiri
     (and (eq ?cekx (+ ?x 1)) (eq ?ceky ?y))) ;sejajar-kanan
         then
-            (retract ?sekitar)
-            (retract ?sekitar_tutup)
+;            (retract ?sekitar)
+;            (retract ?sekitar_tutup)
             (retract ?sisa)
             (assert (flag ?cekx ?ceky ?z))
-            (assert (around_flag ?x ?y (+ ?n 1)))
+;            (assert (around_flag ?x ?y (+ ?n 1)))
             (assert (total_flag (+ ?t 1)))
-            (assert (around_closed ?x ?y (- ?a 1)))
+;            (assert (around_closed ?x ?y (- ?a 1)))
+            (assert (please_update ?cekx ?ceky ?z))
 
             (printout t "Sejajar" ?x ?y crlf)
     )
@@ -671,15 +672,15 @@
     (or (and (eq ?cekx (- ?x 1)) (eq ?ceky (+ ?y 1))) ;bawah-kiri
     (and (eq ?cekx ?x) (eq ?ceky (+ ?y 1))))) ;bawah-tengah
         then
-            (retract ?sekitar)
-            (retract ?sekitar_tutup)
+;            (retract ?sekitar)
+;            (retract ?sekitar_tutup)
             (retract ?sisa)
             (assert (flag ?cekx ?ceky ?z))
-            (assert (around_flag ?x ?y (+ ?n 1)))
+;            (assert (around_flag ?x ?y (+ ?n 1)))
             (assert (total_flag (+ ?t 1)))
-            (assert (around_closed ?x ?y (- ?a 1)))
+;            (assert (around_closed ?x ?y (- ?a 1)))
+            (assert (please_update ?cekx ?ceky ?z))
 
             (printout t "Bawah" ?x ?y crlf)
     )
-
 )
