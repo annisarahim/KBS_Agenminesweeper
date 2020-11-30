@@ -8,7 +8,7 @@ def score(bombs, board_size):
     for bomb in bombs:
        (x_bomb, y_bomb) = bomb
        score = -1
-       fact_string = "(score " + str(x_bomb) + " " + str(y_bomb) + " " + str(score) + ")"
+       fact_string = "(closed " + str(x_bomb) + " " + str(y_bomb) + " " + str(score) + ")"
        fact_array.append(fact_string)
 
     for i in range (board_size):
@@ -28,7 +28,7 @@ def score(bombs, board_size):
                         ((x == x_bomb) and (y_up == y_bomb)) or
                         ((x_right == x_bomb) and (y_up == y_bomb))):
                         score += 1
-                fact_string = "(score " + str(i) + " " + str(j) + " " + str(score) + ")"
+                fact_string = "(closed " + str(i) + " " + str(j) + " " + str(score) + ")"
                 fact_array.append(fact_string)
             # print(fact_string)
     for i in range (board_size):
@@ -73,8 +73,9 @@ print("Bomb(s)        = " + str(bombs))
 
 # Create new CLIPS environment
 env = clips.Environment()
-env.load('ms.clp')
 
+
+env.load('ms.clp')
 # Insert initial facts to CLIPS
 initial_board_fact = score(bombs, board_size)
 for fact in initial_board_fact:
@@ -84,7 +85,13 @@ for i in range (len(initial_board_fact)):
     fact_string = initial_board_fact[i]
     fact = env.assert_string(fact_string)
 
+# for rule in env.rules():
+#     print(rule)
 
+# env.reset()
 env.run()
+# env.reset()
 for fact in env.facts():
     print(fact)
+# print(env.rules())
+# print(env.facts())
