@@ -1,58 +1,3 @@
-; DELETE FACTS DIBAWAH INI DULU KL MAU JALANIN PAKE PYTHONN
-; (deffacts board
-;     (board 4 4)
-;     (total_bomb 2)
-;     (total_flag 0)
-;     (closed 2 1 -1)
-;     (closed 3 2 -1)
-;     (closed 0 0 0)
-;     (closed 0 1 0)
-;     (closed 0 2 0)
-;     (closed 0 3 0)
-;     (closed 1 0 1)
-;     (closed 1 1 1)
-;     (closed 1 2 1)
-;     (closed 1 3 0)
-;     (closed 2 0 1)
-;     (closed 2 2 2)
-;     (closed 2 3 1)
-;     (closed 3 0 1)
-;     (closed 3 1 2)
-;     (closed 3 3 1)
-;     (around_flag 0 0 0)
-;     (around_closed 0 0 0)
-;     (around_flag 0 1 0)
-;     (around_closed 0 1 0)
-;     (around_flag 0 2 0)
-;     (around_closed 0 2 0)
-;     (around_flag 0 3 0)
-;     (around_closed 0 3 0)
-;     (around_flag 1 0 0)
-;     (around_closed 1 0 0)
-;     (around_flag 1 1 0)
-;     (around_closed 1 1 0)
-;     (around_flag 1 2 0)
-;     (around_closed 1 2 0)
-;     (around_flag 1 3 0)
-;     (around_closed 1 3 0)
-;     (around_flag 2 0 0)
-;     (around_closed 2 0 0)
-;     (around_flag 2 1 0)
-;     (around_closed 2 1 0)
-;     (around_flag 2 2 0)
-;     (around_closed 2 2 0)
-;     (around_flag 2 3 0)
-;     (around_closed 2 3 0)
-;     (around_flag 3 0 0)
-;     (around_closed 3 0 0)
-;     (around_flag 3 1 0)
-;     (around_closed 3 1 0)
-;     (around_flag 3 2 0)
-;     (around_closed 3 2 0)
-;     (around_flag 3 3 0)
-;     (around_closed 3 3 0)
-; )
-
 (defrule start
     (declare(salience 500))
     ?init <- (initial-fact)
@@ -61,22 +6,13 @@
     (retract ?init)
     (retract ?tile0)
     (assert (probed 0 0 0))
-    ;(printout t "WELCOME TO MINESWEEPER!!" crlf)
-    ;(printout t "Let's Play!" crlf)
-    ;(printout t "" crlf)
 )
 
 (defrule probe-start
-; Membuka pertama kali dari posisi (0, 0)
-; not_cek_probe = tile belum di cek apakah tile sekitarnya dapat lanjut dibuka atau tidak
-; STEPS :
-; 1. Buka posisi (1,0) (0,1) (1,1)
-; 2. Posisi akan masuk ke probe-zero apabila score posisi tsb = 0
     (probed 0 0 0)
     ?tr <-(closed 1 0 ?s1)
     ?td <-(closed 0 1 ?s2)
     ?trd <-(closed 1 1 ?s3)
-
     =>
     (retract ?tr)
     (assert (probed 1 0 ?s1))
@@ -89,20 +25,15 @@
     (retract ?trd)
     (assert (probed 1 1 ?s3))
     (assert (not_cek_probe 1 1))
-
-    ;(printout t "rule probe-start jalan" crlf)
 )
 
 (defrule probe-zero
 ; Lanjutan dari probe-start
-; Menandakan tile sekitar yang dapat dibuka (memastikan tidak keluar dari board_size) 
-; dari tile bernilai 0 yang sudah dibuka sebelumnya
+; Menandakan tile sekitar yang dapat dibuka (memastikan tidak keluar dari board_size) dari tile bernilai 0 yang sudah dibuka sebelumnya
 ; can_probe = tile yang dapat dibuka, selanjutnya dibuka oleh rule probe
 ; has_cek_probe = tile sudah dicek dan sudah ditandai juga tile sekitarnya yang dapat dibuka
 
-; Ini dia udah bisa ngejalanin semua yang nilai nya 0
-; Masih belum bisa bagian syntax(score (+ ?x 1) ?y ?s)
-; Gabisa masukin (+ ?x 1) ke dalam variabel jadi bingung akses rulenya gimana
+
     (declare (salience 20))
     ?tilecek_zero <- (probed ?x ?y 0)
     ?board <- (board ?xb ?yb)
@@ -305,9 +236,6 @@
     (board ?xb ?yb)
 	  ?f1 <- (around_closed ?x ?y ?m)
     ?f2 <- (around_flag ?x ?y ?o)
-	;(test (neq ?n 0))
-  ;(test (eq ?m 0))
-  ;(test (eq ?o 0))
 	=>
 	(bind ?xleft (- ?x 1))
     (bind ?xright (+ ?x 1))
@@ -447,8 +375,6 @@
     (retract ?f1)
     (retract ?f2)
     (assert (around_closed ?x ?y ?n_close))
-    
-    ;(printout t ?x " " ?y " " ?a " " ?b  crlf)
 )
 
 (defrule cek-close-probed
@@ -470,15 +396,11 @@
     ?f2 <- (around_flag ?x ?y ?n)
     ?f3 <- (around_closed ?x ?y ?m)
     (flag ?a ?b ?z)
-;    (test (> ?m 0))
     =>
     (bind ?n_flag (+ ?n 1))
-;   (bind ?n_close (- ?m 1))
     (retract ?f1)
     (retract ?f2)
     (assert (around_flag ?x ?y ?n_flag))
-;    (assert (around_closed ?x ?y ?n_close))
-;    (printout t ?x " " ?y " " ?a " " ?b  crlf)
 )
 
 (defrule cek-flag-probed
@@ -562,7 +484,7 @@
 )
 
 (defrule probe-kanan-tengah
-	?f1 <- (probe_remaining ?x ?y)
+	  ?f1 <- (probe_remaining ?x ?y)
     ?f2 <- (closed ?x1 ?y1 ?n)
     ?f3 <- (board ?xb ?yb)
     (not (flag ?x1 ?y1))
@@ -570,7 +492,6 @@
     (test (= ?x1 (+ ?x 1)))
     (test (= ?y1 ?y))
     =>
-    ;(bind ?right (+ ?x 1))
     (if (< ?x1 ?xb)
     then
         (assert(probed ?x1 ?y1 ?n))
@@ -580,7 +501,7 @@
 )
 
 (defrule probe-kanan-bawah
-	?f1 <- (probe_remaining ?x ?y)
+	  ?f1 <- (probe_remaining ?x ?y)
     ?f2 <- (closed ?x1 ?y1 ?n)
     ?f3 <- (board ?xb ?yb)
     (not (flag ?x1 ?y1))
@@ -614,7 +535,7 @@
 )
 
 (defrule probe-tengah-bawah
-	?f1 <- (probe_remaining ?x ?y)
+	  ?f1 <- (probe_remaining ?x ?y)
     ?f2 <- (closed ?x1 ?y1 ?n)
     ?f3 <- (board ?xb ?yb)
     (not (flag ?x1 ?y1))
@@ -639,29 +560,22 @@
 
 (defrule flag_remain
     ?sisa <- (flag_remaining ?x ?y)
-;    ?sekitar <- (around_flag ?x ?y ?n)
     ?tutup <- (closed ?cekx ?ceky ?z)
     ?total <- (total_flag ?t)
-;    ?sekitar_tutup <- (around_closed ?x ?y ?a)
     (not (flag ?cekx ?ceky ?z))
     =>
 
-    ;ini kondisi -> lg ngecek bagian mana dari tile sekarang 
     ;atas
     (if (or (and (eq ?cekx (+ ?x 1)) (eq ?ceky (- ?y 1))) ;atas-kanan
     (or (and (eq ?cekx (- ?x 1)) (eq ?ceky (- ?y 1))) ;atas-kiri
     (and (eq ?cekx ?x) (eq ?ceky (- ?y 1))))) ;atas-tengah
         then
-;            (retract ?sekitar)
-;            (retract ?sekitar_tutup)
             (retract ?tutup)
             (retract ?sisa)
             (retract ?tutup)
             (assert (flag ?cekx ?ceky ?z))
-;            (assert (around_flag ?x ?y (+ ?n 1)))
             (retract ?total)
             (assert (total_flag (+ ?t 1)))
-;            (assert (around_closed ?x ?y (- ?a 1)))
             (assert (update_sekitar ?cekx ?ceky))
 
             ;(printout t "Bagian Atas" ?x ?y crlf)
@@ -672,14 +586,10 @@
     (if (or (and (eq ?cekx (- ?x 1)) (eq ?ceky ?y)) ;sejajar-kiri
     (and (eq ?cekx (+ ?x 1)) (eq ?ceky ?y))) ;sejajar-kanan
         then
-;            (retract ?sekitar)
-;            (retract ?sekitar_tutu
             (retract ?tutup)
             (retract ?sisa)
             (assert (flag ?cekx ?ceky ?z))
-;            (assert (around_flag ?x ?y (+ ?n 1)))
             (assert (total_flag (+ ?t 1)))
-;            (assert (around_closed ?x ?y (- ?a 1)))
             (assert (update_sekitar ?cekx ?ceky))
             (retract ?tutup)
             (retract ?total)
@@ -693,14 +603,10 @@
     (or (and (eq ?cekx (- ?x 1)) (eq ?ceky (+ ?y 1))) ;bawah-kiri
     (and (eq ?cekx ?x) (eq ?ceky (+ ?y 1))))) ;bawah-tengah
         then
-;            (retract ?sekitar)
-;            (retract ?sekitar_tutup)
             (retract ?tutup)
             (retract ?sisa)
             (assert (flag ?cekx ?ceky ?z))
-;            (assert (around_flag ?x ?y (+ ?n 1)))
             (assert (total_flag (+ ?t 1)))
-;            (assert (around_closed ?x ?y (- ?a 1)))
             (assert (update_sekitar ?cekx ?ceky))
             (retract ?tutup)
             (retract ?total)
@@ -905,4 +811,3 @@
     ;(printout t "Sorry, you lose! :(" crlf)
     ;(printout t "" crlf)
 )
-    
