@@ -33,4 +33,4 @@ Baris pertama adalah ukuran board, baris kedua adalah jumlah bomb, baris ketiga 
 
 
 ## Output program
-![Hasil Akhir](https://github.com/yasyfiana/KBS_Agenminesweeper/blob/main/Result.png)
+![Hasil Akhir](Result.png)
