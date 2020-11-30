@@ -73,7 +73,6 @@ print("Bomb(s)        = " + str(bombs))
 
 # Create new CLIPS environment
 env = clips.Environment()
-env.load('ms.clp')
 
 # Insert initial facts to CLIPS
 initial_board_fact = score(bombs, board_size)
@@ -84,7 +83,9 @@ for i in range (len(initial_board_fact)):
     fact_string = initial_board_fact[i]
     fact = env.assert_string(fact_string)
 
-
+env.load('ms.clp')
+env.reset()
 env.run()
+print("here")
 for fact in env.facts():
     print(fact)
