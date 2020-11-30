@@ -61,9 +61,9 @@
     (retract ?init)
     (retract ?tile0)
     (assert (probed 0 0 0))
-    (printout t "WELCOME TO MINESWEEPER!!" crlf)
-    (printout t "Let's Play!" crlf)
-    (printout t "" crlf)
+    ;(printout t "WELCOME TO MINESWEEPER!!" crlf)
+    ;(printout t "Let's Play!" crlf)
+    ;(printout t "" crlf)
 )
 
 (defrule probe-start
@@ -447,6 +447,8 @@
     (retract ?f1)
     (retract ?f2)
     (assert (around_closed ?x ?y ?n_close))
+    
+    ;(printout t ?x " " ?y " " ?a " " ?b  crlf)
 )
 
 (defrule cek-close-probed
@@ -476,6 +478,7 @@
     (retract ?f2)
     (assert (around_flag ?x ?y ?n_flag))
 ;    (assert (around_closed ?x ?y ?n_close))
+;    (printout t ?x " " ?y " " ?a " " ?b  crlf)
 )
 
 (defrule cek-flag-probed
@@ -903,30 +906,3 @@
     ;(printout t "" crlf)
 )
     
-
-;     (bind ?xleft (- ?x 1))
-;     (bind ?xright (+ ?x 1))
-;     (bind ?ydown (+ ?y 1))
-;     (bind ?yup (- ?y 1))
-;     (retract ?f1)
-
-;     (if (and (or (> ?xleft 0) (< ?xright ?xb)) (> ?yup 0))
-;     then 
-;         (assert (please_update ?x ?yup))
-;         (assert (please_update ?xright ?yup))
-;         (assert (please_update ?xleft ?yup))
-;     )
-
-;     (if (and (or (> ?xleft 0) (< ?xright ?xb)) (< ?ydown ?yb))
-;     then
-;         (assert (please_update ?xright ?ydown))
-;         (assert (please_update ?x ?ydown))
-;         (assert (please_update ?xleft ?ydown))
-;     )
-
-;     (if (or (> ?xleft 0) (< ?xright ?xb))
-;     then 
-;         (assert (please_update ?xleft ?y))
-;         (assert (please_update ?xright ?y))
-;     )
-; )
