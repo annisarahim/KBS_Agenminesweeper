@@ -269,7 +269,7 @@
 	(probed ?x ?y ?n)
     (test (> ?n 0))
 	=>
-	(assert (please_update ?x ?y ?n))
+	(assert (please_update ?x ?y))
 )
 
 (defrule clean-not_cek_probe
@@ -295,11 +295,11 @@
 )
 
 (defrule update-around_closed
-    ?a <- (please_update ?x ?y ?n)
+    ?a <- (please_update ?x ?y)
     (board ?xb ?yb)
 	(around_closed ?x ?y ?m)
     (around_flag ?x ?y ?o)
-	(test (neq ?n 0))
+	;(test (neq ?n 0))
  ;   (test (eq ?m 0))
   ;  (test (eq ?o 0))
 	=>
@@ -642,11 +642,12 @@
 ;            (retract ?sekitar)
 ;            (retract ?sekitar_tutup)
             (retract ?sisa)
+            (retract ?tutup)
             (assert (flag ?cekx ?ceky ?z))
 ;            (assert (around_flag ?x ?y (+ ?n 1)))
             (assert (total_flag (+ ?t 1)))
 ;            (assert (around_closed ?x ?y (- ?a 1)))
-            (assert (please_update ?cekx ?ceky ?z))
+            (assert (please_update ?x ?y))
 
             (printout t "Bagian Atas" ?x ?y crlf)
     )
@@ -662,7 +663,8 @@
 ;            (assert (around_flag ?x ?y (+ ?n 1)))
             (assert (total_flag (+ ?t 1)))
 ;            (assert (around_closed ?x ?y (- ?a 1)))
-            (assert (please_update ?cekx ?ceky ?z))
+            (assert (please_update ?x ?y))
+            (retract ?tutup)
 
             (printout t "Sejajar" ?x ?y crlf)
     )
@@ -679,7 +681,8 @@
 ;            (assert (around_flag ?x ?y (+ ?n 1)))
             (assert (total_flag (+ ?t 1)))
 ;            (assert (around_closed ?x ?y (- ?a 1)))
-            (assert (please_update ?cekx ?ceky ?z))
+            (assert (please_update ?x ?y))
+            (retract ?tutup)
 
             (printout t "Bawah" ?x ?y crlf)
     )
