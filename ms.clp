@@ -241,6 +241,7 @@
     ?f2 <- (around_flag ?x ?y ?n_flag)
     (test (= ?n_close (- ?n ?n_flag)))
     (test (> ?n 0))
+    (test (> ?n_close 0))
     =>
     (assert (flag_remaining ?x ?y))
 )
@@ -269,7 +270,7 @@
 	(probed ?x ?y ?n)
     (test (> ?n 0))
 	=>
-	(assert (please_update ?x ?y ?n))
+	(assert (update_sekitar ?x ?y))
 )
 
 (defrule clean-not_cek_probe
@@ -294,12 +295,13 @@
 	(retract ?f1)
 )
 
-(defrule update-around_closed
-    ?a <- (please_update ?x ?y ?n)
+(defrule update
+    (declare (salience 10))
+    ?a <- (please_update ?x ?y)
     (board ?xb ?yb)
-	(around_closed ?x ?y ?m)
-    (around_flag ?x ?y ?o)
-	(test (neq ?n 0))
+	?f1 <- (around_closed ?x ?y ?m)
+    ?f2 <- (around_flag ?x ?y ?o)
+	;(test (neq ?n 0))
  ;   (test (eq ?m 0))
   ;  (test (eq ?o 0))
 	=>
@@ -307,6 +309,11 @@
     (bind ?xright (+ ?x 1))
     (bind ?ydown (+ ?y 1))
     (bind ?yup (- ?y 1))
+    (retract ?a)
+    (retract ?f1)
+    (retract ?f2)
+    (assert (around_closed ?x ?y 0))
+    (assert (around_flag ?x ?y 0))
 
     ; sudut kanan atas
     (if (and (eq ?x (- ?xb 1)) (eq ?y 0))
@@ -424,11 +431,10 @@
             (assert (cek_flag ?x ?y ?x ?yup))
             (assert (cek_flag ?x ?y ?xleft ?yup))
     )
-    (retract ?a)
+    
 )
 
 (defrule cek-close-true
-    (declare (salience 10))
     ?f1 <- (cek_close ?x ?y ?a ?b)
     ?f2 <- (around_closed ?x ?y ?n)
     (closed ?a ?b ?z)
@@ -447,6 +453,7 @@
     =>
     (retract ?f1)
 )
+
 (defrule cek-close-probed-1
     ?f1 <- (cek_close ?x ?y ?a ?b)
     (flag ?a ?b ?n)
@@ -455,19 +462,19 @@
 )
 
 (defrule cek-flag-true
-    (declare (salience 10))
     ?f1 <- (cek_flag ?x ?y ?a ?b)
     ?f2 <- (around_flag ?x ?y ?n)
     ?f3 <- (around_closed ?x ?y ?m)
     (flag ?a ?b ?z)
-    (test (> ?m 0))
+;    (test (> ?m 0))
     =>
     (bind ?n_flag (+ ?n 1))
-    (bind ?n_close (- ?m 1))
+ ;   (bind ?n_close (- ?m 1))
     (retract ?f1)
     (retract ?f2)
+    (retract ?f3)
     (assert (around_flag ?x ?y ?n_flag))
-    (assert (around_closed ?x ?y ?n_close))
+;    (assert (around_closed ?x ?y ?n_close))
     (printout t ?x " " ?y " " ?a " " ?b  crlf)
 )
 
@@ -647,11 +654,12 @@
 ;            (retract ?sekitar_tutup)
             (retract ?tutup)
             (retract ?sisa)
+            (retract ?tutup)
             (assert (flag ?cekx ?ceky ?z))
 ;            (assert (around_flag ?x ?y (+ ?n 1)))
             (assert (total_flag (+ ?t 1)))
 ;            (assert (around_closed ?x ?y (- ?a 1)))
-            (assert (please_update ?cekx ?ceky ?z))
+            (assert (update_sekitar ?cekx ?ceky))
 
             (printout t "Bagian Atas" ?x ?y crlf)
     )
@@ -668,7 +676,8 @@
 ;            (assert (around_flag ?x ?y (+ ?n 1)))
             (assert (total_flag (+ ?t 1)))
 ;            (assert (around_closed ?x ?y (- ?a 1)))
-            (assert (please_update ?cekx ?ceky ?z))
+            (assert (update_sekitar ?cekx ?ceky))
+            (retract ?tutup)
 
             (printout t "Sejajar" ?x ?y crlf)
     )
@@ -686,8 +695,40 @@
 ;            (assert (around_flag ?x ?y (+ ?n 1)))
             (assert (total_flag (+ ?t 1)))
 ;            (assert (around_closed ?x ?y (- ?a 1)))
-            (assert (please_update ?cekx ?ceky ?z))
+            (assert (update_sekitar ?cekx ?ceky))
+            (retract ?tutup)
 
             (printout t "Bawah" ?x ?y crlf)
+    )
+)
+
+(defrule update-sekitar
+    ?f1 <- (update_sekitar ?x ?y)
+    (board ?xb ?yb)
+    =>
+    (bind ?xleft (- ?x 1))
+    (bind ?xright (+ ?x 1))
+    (bind ?ydown (+ ?y 1))
+    (bind ?yup (- ?y 1))
+    (retract ?f1)
+
+    (if (and (or (> ?xleft 0) (< ?xright ?xb)) (> ?yup 0))
+    then 
+        (assert (please_update ?x ?yup))
+        (assert (please_update ?xright ?yup))
+        (assert (please_update ?xleft ?yup))
+    )
+
+    (if (and (or (> ?xleft 0) (< ?xright ?xb)) (< ?ydown ?yb))
+    then
+        (assert (please_update ?xright ?ydown))
+        (assert (please_update ?x ?ydown))
+        (assert (please_update ?xleft ?ydown))
+    )
+
+    (if (or (> ?xleft 0) (< ?xright ?xb))
+    then 
+        (assert (please_update ?xleft ?y))
+        (assert (please_update ?xright ?y))
     )
 )
