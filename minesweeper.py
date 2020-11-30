@@ -1,4 +1,6 @@
 import clips
+import termcolor
+from termcolor import cprint
 
 def score(bombs, board_size):
     matrix = [['X' for i in range (board_size)] for j in range(board_size)]
@@ -50,12 +52,33 @@ def score(bombs, board_size):
 
     return fact_array, matrix
 
+# # # # # # # 
+
 def printmatrix(matrix,b_size):
     for i in range (b_size):
         for j in range (b_size):
-          print(matrix[i][j], end=" ")
+          if (matrix[i][j] == 'F'):
+              cprint(matrix[i][j], 'red', attrs=['bold'], end=" ")
+          elif (matrix[i][j] == 'X'):
+              print(matrix[i][j], end=" ")
+          else:
+              angka = int(matrix[i][j])
+              if (angka > 0):
+                  if (angka % 5 == 0):
+                      cprint(matrix[i][j], 'cyan', end=" ")
+                  elif (angka % 5 == 1):
+                      cprint(matrix[i][j], 'blue', end=" ")
+                  elif (angka % 5 == 2):
+                      cprint(matrix[i][j], 'magenta', end=" ")
+                  elif (angka % 5 == 3):
+                      cprint(matrix[i][j], 'green', end=" ")
+                  elif (angka % 5 == 4):
+                      cprint(matrix[i][j], 'yellow', end=" ")
+              else:
+                  print(".", end=" ")
           if (j == (b_size-1)):
-            print("")
+              print("")
+                
              
 
 # Read info from txt
@@ -111,7 +134,7 @@ i = input("Press enter to start!")
 
 for i in range (init[0]):
   for j in range (init[0]):
-    matrix[i][j] = "."
+    matrix[i][j] = "X"
 printmatrix(matrix,init[0])
 
   
@@ -120,6 +143,7 @@ printmatrix(matrix,init[0])
 win = False
 flags=[]
 while not(win):
+  # print("Loading...")
   env.run(1)
   draw = False
   for fact in env.facts():
@@ -141,22 +165,32 @@ while not(win):
       score = str(fact[2])
       if (matrix[int(y)][int(x)] != score):
         matrix[int(y)][int(x)] = score
-        print("")
-        print(fact.template.name,x,y)
-        draw = True
+        if (fact[2]>0):
+          print("")
+          print(fact.template.name,x,y)
+          draw = True
 
-    elif fact.template.name == 'win':
-      win = True
+    elif (fact.template.name == 'win'):
+      lose = False
+      for flag_ in flags :
+        if flag_ not in bombs :
+          lose = True
+
+      if not lose :
+        print("")
+        print("You win!")
+        print("final matrix:")
+      else :
+        print("Sorry, you're wrong:(")
       draw = True
-      print("")
-      print("You win!")
-      print("final matrix:")
+      win = True
 
     if (draw):
       printmatrix(matrix, init[0]) 
+      # i = input("next")
+  
 
 
+print("Bombs: ",bombs)
 print("Flags: ",flags)
-
-      
-
+    
