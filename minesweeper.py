@@ -53,6 +53,7 @@ def score(bombs, board_size):
 def printmatrix(matrix,b_size):
     for i in range (b_size):
         for j in range (b_size):
+<<<<<<< Updated upstream
             if (int(matrix[i][j])==-1):
                 print(matrix[i][j], end=" ")
             elif (int(matrix[i][j])<10):
@@ -61,6 +62,12 @@ def printmatrix(matrix,b_size):
                 print(matrix[i][j], end=" ")
             if (j==b_size-1):
                 print("")
+=======
+            if (j==b_size-1):
+                print("")
+            else:
+              print(matrix[i][j], end=" ")
+>>>>>>> Stashed changes
 
 # Read info from txt
 file = open("init.txt", "r")
@@ -109,27 +116,46 @@ for i in range (len(initial_board_fact)):
     fact = env.assert_string(fact_string)
 
 print("Initial Matrix")
+for i in range (init[0]):
+  for j in range (init[0]):
+    matrix[i][j] = "."
 printmatrix(matrix,init[0])
+i = input()
+  
 # for rule in env.rules():
 #     print(rule)
+win = False
 
-# env.reset()
-env.run()
-# env.reset()
-
-print("flags: ")
-
-flags = []
-for fact in env.facts():
+while not(win):
+  env.run(1)
+  draw = False
+  for fact in env.facts():
+    draw = False
     if fact.template.name == 'flag':
-        print(fact)
-        flags.append(fact)
-print(flags)
+      x = str(fact[0])
+      y = str(fact[1])
+      score = str(fact[2])
+      if (matrix[int(y)][int(x)] != 'F'):
+        matrix[int(y)][int(x)] = 'F'
+        print("")
+        print(fact.template.name,x,y)
+        draw = True
 
+    elif fact.template.name == 'probed':
+      x = str(fact[0])
+      y = str(fact[1])
+      score = str(fact[2])
+      if (matrix[int(y)][int(x)] != score):
+        matrix[int(y)][int(x)] = score
+        print("")
+        print(fact.template.name,x,y)
+        draw = True
 
+    elif fact.template.name == 'win':
+      win = True
+      draw = True
+      print("")
+      print("WINN KELARR")
 
-
-
-# print(env.rules())
-# print(env.facts())
-
+    if (draw):
+      printmatrix(matrix, init[0]) 

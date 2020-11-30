@@ -446,8 +446,6 @@
     (retract ?f1)
     (retract ?f2)
     (assert (around_closed ?x ?y ?n_close))
-    
-    (printout t ?x " " ?y " " ?a " " ?b  crlf)
 )
 
 (defrule cek-close-probed
@@ -477,7 +475,6 @@
     (retract ?f2)
     (assert (around_flag ?x ?y ?n_flag))
 ;    (assert (around_closed ?x ?y ?n_close))
-    (printout t ?x " " ?y " " ?a " " ?b  crlf)
 )
 
 (defrule cek-flag-probed
