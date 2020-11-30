@@ -1,6 +1,7 @@
 ; DELETE FACTS DIBAWAH INI DULU KL MAU JALANIN PAKE PYTHONN
 (deffacts board
     (board 4 4)
+    (total_bomb 2)
     (total_flag 0)
     (closed 2 1 -1)
     (closed 3 2 -1)
@@ -236,6 +237,7 @@
 ; Jika jumlah tile yang tertutup disekitar tile dengan score n > 0
 ; masih lebih besar daripada jumlah tile yang di tandai (flag)
 ; maka, tandai semua tile yang tertutup dan belum di-flag
+    (declare (salience -1))
     (probed ?x ?y ?n)
     ?f1 <- (around_closed ?x ?y ?n_close)
     ?f2 <- (around_flag ?x ?y ?n_flag)
@@ -250,6 +252,7 @@
 ; Jika jumlah tile yang di-flag disekitar tile sama dengan score n > 0
 ; sama daripada jumlah tile yang di tandai (flag)
 ; maka, tandai semua tile yang tertutup dan belum di-flag
+    (declare (salience -1))
     (probed ?x ?y ?n)
     ?f1 <- (around_closed ?x ?y ?n_close)
     ?f2 <- (around_flag ?x ?y ?n_flag)
@@ -472,7 +475,6 @@
  ;   (bind ?n_close (- ?m 1))
     (retract ?f1)
     (retract ?f2)
-    (retract ?f3)
     (assert (around_flag ?x ?y ?n_flag))
 ;    (assert (around_closed ?x ?y ?n_close))
     (printout t ?x " " ?y " " ?a " " ?b  crlf)
@@ -657,6 +659,7 @@
             (retract ?tutup)
             (assert (flag ?cekx ?ceky ?z))
 ;            (assert (around_flag ?x ?y (+ ?n 1)))
+            (retract ?total)
             (assert (total_flag (+ ?t 1)))
 ;            (assert (around_closed ?x ?y (- ?a 1)))
             (assert (update_sekitar ?cekx ?ceky))
@@ -678,6 +681,7 @@
 ;            (assert (around_closed ?x ?y (- ?a 1)))
             (assert (update_sekitar ?cekx ?ceky))
             (retract ?tutup)
+            (retract ?total)
 
             (printout t "Sejajar" ?x ?y crlf)
     )
@@ -697,169 +701,170 @@
 ;            (assert (around_closed ?x ?y (- ?a 1)))
             (assert (update_sekitar ?cekx ?ceky))
             (retract ?tutup)
+            (retract ?total)
 
             (printout t "Bawah" ?x ?y crlf)
     )
 )
 
 (defrule update-sekitar-kanan-atas
+    (declare (salience -1))
     (update_sekitar ?x ?y)
     (probed ?cekx ?ceky ?n_close)
+    (test (eq ?cekx (+ ?x 1)))
+    (test (eq ?ceky (- ?y 1)))
     =>
-    (if (and (eq ?cekx (+ ?x 1)) (eq ?ceky (- ?y 1)))
-        then 
-        (assert (please_update ?cekx ?ceky))
-    )
+    (assert (please_update ?cekx ?ceky))
 )
 
 (defrule update-sekitar-kanan-atas-1
+    (declare (salience -1))
     (update_sekitar ?x ?y)
     (flag ?cekx ?ceky ?n_close)
+    (test (eq ?cekx (+ ?x 1)))
+    (test (eq ?ceky (- ?y 1)))
     =>
-    (if (and (eq ?cekx (+ ?x 1)) (eq ?ceky (- ?y 1)))
-        then 
-        (assert (please_update ?cekx ?ceky))
-    )
+    (assert (please_update ?cekx ?ceky))
 )
 
 (defrule update-sekitar-tengah-atas
+    (declare (salience -1))
     (update_sekitar ?x ?y)
     (probed ?cekx ?ceky ?n_close)
+    (test (eq ?cekx ?x))
+    (test (eq ?ceky (- ?y 1)))
     =>
-    (if (and (eq ?cekx ?x) (eq ?ceky (- ?y 1)))
-        then 
-        (assert (please_update ?cekx ?ceky))
-    )
+    (assert (please_update ?cekx ?ceky))
 )
 
 (defrule update-sekitar-tengah-atas-1
+    (declare (salience -1))
     (update_sekitar ?x ?y)
     (flag ?cekx ?ceky ?n_close)
+    (test (eq ?cekx ?x))
+    (test (eq ?ceky (- ?y 1)))
     =>
-    (if (and (eq ?cekx ?x) (eq ?ceky (- ?y 1)))
-        then 
-        (assert (please_update ?cekx ?ceky))
-    )
+    (assert (please_update ?cekx ?ceky))
 )
 
 (defrule update-sekitar-kiri-atas
+    (declare (salience -1))
     (update_sekitar ?x ?y)
     (probed ?cekx ?ceky ?n_close)
+    (test (eq ?cekx (- ?x 1)))
+    (test (eq ?ceky (- ?y 1)))
     =>
-    (if (and (eq ?cekx (- ?x 1)) (eq ?ceky (- ?y 1)))
-        then 
-        (assert (please_update ?cekx ?ceky))
-    )
+    (assert (please_update ?cekx ?ceky))
 )
 
 (defrule update-sekitar-kiri-atas-1
+    (declare (salience -1))
     (update_sekitar ?x ?y)
     (flag ?cekx ?ceky ?n_close)
+    (test (eq ?cekx (- ?x 1)))
+    (test (eq ?ceky (- ?y 1)))
     =>
-    (if (and (eq ?cekx (- ?x 1)) (eq ?ceky (- ?y 1)))
-        then 
-        (assert (please_update ?cekx ?ceky))
-    )
+    (assert (please_update ?cekx ?ceky))
 )
 
 (defrule update-sekitar-kiri
+    (declare (salience -1))
     (update_sekitar ?x ?y)
     (probed ?cekx ?ceky ?n_close)
+    (test (eq ?cekx (- ?x 1)))
+    (test (eq ?ceky ?y))
     =>
-    (if (and (eq ?cekx (- ?x 1)) (eq ?ceky ?y))
-        then 
-        (assert (please_update ?cekx ?ceky))
-    )
+    (assert (please_update ?cekx ?ceky))
 )
 
 (defrule update-sekitar-kiri-1
+    (declare (salience -1))
     (update_sekitar ?x ?y)
     (flag ?cekx ?ceky ?n_close)
+    (test (eq ?cekx (- ?x 1)))
+    (test (eq ?ceky ?y))
     =>
-    (if (and (eq ?cekx (- ?x 1)) (eq ?ceky ?y))
-        then 
-        (assert (please_update ?cekx ?ceky))
-    )
+    (assert (please_update ?cekx ?ceky))
 )
 
 (defrule update-sekitar-kanan
+    (declare (salience -1))
     (update_sekitar ?x ?y)
     (flag ?cekx ?ceky ?n_close)
+    (test (eq ?cekx (+ ?x 1)))
+    (test (eq ?ceky ?y))
     =>
-    (if (and (eq ?cekx (+ ?x 1)) (eq ?ceky ?y))
-        then 
-        (assert (please_update ?cekx ?ceky))
-    )
+    (assert (please_update ?cekx ?ceky))
 )
 
 (defrule update-sekitar-kanan-1
+    (declare (salience -1))
     (update_sekitar ?x ?y)
     (probed ?cekx ?ceky ?n_close)
+    (test (eq ?cekx (+ ?x 1)))
+    (test (eq ?ceky ?y))
     =>
-    (if (and (eq ?cekx (+ ?x 1)) (eq ?ceky ?y))
-        then 
-        (assert (please_update ?cekx ?ceky))
-    )
+    (assert (please_update ?cekx ?ceky))
 )
 
 (defrule update-sekitar-kanan-bawah
+    (declare (salience -1))
     (update_sekitar ?x ?y)
     (probed ?cekx ?ceky ?n_close)
+    (test (eq ?cekx (+ ?x 1)))
+    (test (eq ?ceky (+ ?y 1)))
     =>
-    (if (and (eq ?cekx (+ ?x 1)) (eq ?ceky (+ ?y 1)))
-        then 
-        (assert (please_update ?cekx ?ceky))
-    )
+    (assert (please_update ?cekx ?ceky))
 )
 
 (defrule update-sekitar-kanan-bawah-1
+    (declare (salience -1))
     (update_sekitar ?x ?y)
     (flag ?cekx ?ceky ?n_close)
+    (test (eq ?cekx (+ ?x 1)))
+    (test (eq ?ceky (+ ?y 1)))
     =>
-    (if (and (eq ?cekx (+ ?x 1)) (eq ?ceky (+ ?y 1)))
-        then 
-        (assert (please_update ?cekx ?ceky))
-    )
+    (assert (please_update ?cekx ?ceky))
 )
 
 (defrule update-sekitar-tengah-bawah
+    (declare (salience -1))
     (update_sekitar ?x ?y)
     (flag ?cekx ?ceky ?n_close)
+    (test (eq ?cekx ?x))
+    (test (eq ?ceky (+ ?y 1)))
     =>
-    (if (and (eq ?cekx ?x) (eq ?ceky (+ ?y 1)))
-        then 
-        (assert (please_update ?cekx ?ceky))
-    )
+    (assert (please_update ?cekx ?ceky))
 )
 
 (defrule update-sekitar-tengah-bawah-1
+    (declare (salience -1))
     (update_sekitar ?x ?y)
     (probed ?cekx ?ceky ?n_close)
+    (test (eq ?cekx ?x))
+    (test (eq ?ceky (+ ?y 1)))
     =>
-    (if (and (eq ?cekx ?x) (eq ?ceky (+ ?y 1)))
-        then 
-        (assert (please_update ?cekx ?ceky))
-    )
+    (assert (please_update ?cekx ?ceky))
 )
 
 (defrule update-sekitar-kiri-bawah
+    (declare (salience -1))
     (update_sekitar ?x ?y)
     (probed ?cekx ?ceky ?n_close)
+    (test (eq ?cekx (- ?x 1)))
+    (test (eq ?ceky (+ ?y 1)))
     =>
-    (if (and (eq ?cekx (+ ?x 1)) (eq ?ceky (+ ?y 1)))
-        then 
-        (assert (please_update ?cekx ?ceky))
-    )
+    (assert (please_update ?cekx ?ceky))
 )
 
 (defrule update-sekitar-kiri-bawah-1
+    (declare (salience -1))
     (update_sekitar ?x ?y)
     (flag ?cekx ?ceky ?n_close)
+    (test (eq ?cekx (- ?x 1)))
+    (test (eq ?ceky (+ ?y 1)))
     =>
-    (if (and (eq ?cekx (+ ?x 1)) (eq ?ceky (+ ?y 1)))
-        then 
-        (assert (please_update ?cekx ?ceky))
-    )
+    (assert (please_update ?cekx ?ceky))
 )
 
 (defrule retract-updatesekitar
@@ -870,8 +875,34 @@
 )
 
 
+(defrule retract-please_update
+    (declare (salience -20))
+    ?f1 <- (please_update ?x ?y)
+    (probed ?x ?y 0)
+    =>
+    (retract ?f1)
+)
 
+(defrule winning
+    (declare (salience -20))
+    (total_bomb ?x)
+    (total_flag ?y)
+    (test (eq ?x ?y))
+    =>
+    (assert (win))
+    (printout t "YEYYY MENANG" crlf)
+    (printout t "" crlf)
+)
 
+(defrule kalah
+    (declare (salience -20))
+    (probed ?x ?y -1)
+    =>
+    (assert (kalah))
+    (printout t ":( KALAH" crlf)
+    (printout t "" crlf)
+)
+    
 
 ;     (bind ?xleft (- ?x 1))
 ;     (bind ?xright (+ ?x 1))
